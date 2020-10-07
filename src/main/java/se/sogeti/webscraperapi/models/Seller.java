@@ -10,12 +10,12 @@ import javax.persistence.Id;
 
 @Entity
 public class Seller implements Serializable {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "seller_name", columnDefinition = "varchar(255) ", nullable = false, unique = true)
+    @Column(name = "seller_name", columnDefinition = "varchar(255)", nullable = false, unique = true)
     private String name;
 
     @Column(name = "seller_location", columnDefinition = "varchar(255)")
@@ -23,12 +23,12 @@ public class Seller implements Serializable {
 
     @Column(name = "seller_registered_date", columnDefinition = "varchar(255)")
     private String registered;
-    
+
     @Column(name = "seller_href", columnDefinition = "varchar(255)")
     private String sellerHref;
 
-    //@Column(name = "seller_adverts")
-    //private List<Advert> adverts;
+    // @Column(name = "seller_adverts")
+    // private Collections<Advert> adverts;
 
     public long getId() {
         return id;
@@ -69,4 +69,12 @@ public class Seller implements Serializable {
     public void setSellerHref(String sellerHref) {
         this.sellerHref = sellerHref;
     }
+
+    // public Collections<Advert> getAdverts() {
+    // return adverts;
+    // }
+
+    // public void setCollections(Collections<Advert> adverts) {
+    // this.adverts = adverts;
+    // }
 }
