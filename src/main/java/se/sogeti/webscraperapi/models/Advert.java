@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 public class Advert implements Serializable {
@@ -20,14 +19,13 @@ public class Advert implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "ADVERT_CATEGORY", nullable = false)
+    @ManyToOne //(name = "ADVERT_CATEGORY", nullable = false)
     private Category category;
 
     @Column(name = "ADVERT_NAME", columnDefinition = "VARCHAR(255)")
     private String name;
 
     @ManyToOne
-    @JoinColumn(name = "ADVERT_SELLER", nullable = false)
     private Seller seller;
 
     @Column(name = "ADVERT_DESCRIPTION", columnDefinition = "VARCHAR(255)")

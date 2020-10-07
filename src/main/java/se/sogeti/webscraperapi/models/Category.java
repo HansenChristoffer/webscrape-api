@@ -1,11 +1,15 @@
 package se.sogeti.webscraperapi.models;
 
 import java.io.Serializable;
+import java.util.Collection;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 
 public class Category implements Serializable {
 
@@ -24,8 +28,9 @@ public class Category implements Serializable {
     @Column(name = "CATEGORY_HREF", columnDefinition = "VARCHAR(255)", nullable = false, unique = true)
     private String categoryHref;
 
-    //@Column(name = "category_adverts")
-    //private Collections<Advert> adverts; // TODO Fix OneToMany relationship (Perhaps JoinColumn)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "CATEGORY_ID")
+    private Collection<Advert> adverts; // TODO Fix OneToMany relationship (Perhaps JoinColumn)
 
     public long getId() {
         return id;
@@ -51,11 +56,11 @@ public class Category implements Serializable {
         this.categoryHref = categoryHref;
     }
 
-    // public Collections<Advert> getAdverts() {
-    //     return adverts;
-    // }
+    public Collection<Advert> getAdverts() {
+        return adverts;
+    }
 
-    // public void setCollections(Collections<Advert> adverts) {
-    //     this.adverts = adverts;
-    // }
+    public void setCollections(Collection<Advert> adverts) {
+        this.adverts = adverts;
+    }
 }
