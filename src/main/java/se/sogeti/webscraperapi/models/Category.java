@@ -9,6 +9,11 @@ import javax.persistence.Id;
 
 public class Category implements Serializable {
 
+    /**
+     *
+     */
+    private static final long serialVersionUID = -2371741008467000093L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
