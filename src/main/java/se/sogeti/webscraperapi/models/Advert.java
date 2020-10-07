@@ -42,6 +42,7 @@ public class Advert implements Serializable {
     @Column(name = "ADVERT_HREF", columnDefinition = "VARCHAR(255)", nullable = false, unique = true)
     private String advertHref;
 
+    //@Lob
     //@Column(name = "ADVERT_IMAGE", columnDefinition = "BLOB")
     //private byte[] image; // TODO Research and find solution on how or if you should store image in database
     
