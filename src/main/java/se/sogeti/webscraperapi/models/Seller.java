@@ -9,11 +9,20 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
 @Entity
 public class Seller implements Serializable {
+
+    public Seller() {}
+
+    public Seller(String name, String location, String registered, String sellerHref, Collection<Advert> adverts) {
+        this.name = name;
+        this.location = location;
+        this.registered = registered;
+        this.sellerHref = sellerHref;
+        this.adverts = adverts;
+    }
 
     /**
      *
@@ -36,8 +45,7 @@ public class Seller implements Serializable {
     @Column(name = "SELLER_HREF", columnDefinition = "VARCHAR(255)")
     private String sellerHref;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "SELLER_ID")
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
     private Collection<Advert> adverts; // TODO Fix OneToMany relationship (Perhaps JoinColumn)
 
     public long getId() {
@@ -81,10 +89,10 @@ public class Seller implements Serializable {
     }
 
     public Collection<Advert> getAdverts() {
-    return adverts;
+        return adverts;
     }
 
     public void setCollections(Collection<Advert> adverts) {
-    this.adverts = adverts;
+        this.adverts = adverts;
     }
 }
