@@ -33,7 +33,7 @@ public class Seller implements Serializable {
     private String sellerHref;
 
     // @Column(name = "seller_adverts")
-    // private Collections<Advert> adverts;
+    // private Collection<Advert> adverts; // TODO Fix OneToMany relationship (Perhaps JoinColumn)
 
     public long getId() {
         return id;

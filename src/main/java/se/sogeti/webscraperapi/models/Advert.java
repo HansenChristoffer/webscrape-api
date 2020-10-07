@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 public class Advert implements Serializable {
 
@@ -24,7 +26,8 @@ public class Advert implements Serializable {
     @Column(name = "ADVERT_NAME", columnDefinition = "VARCHAR(255)")
     private String name;
 
-    @Column(name = "ADVERT_SELLER", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "ADVERT_SELLER", nullable = false)
     private Seller seller;
 
     @Column(name = "ADVERT_DESCRIPTION", columnDefinition = "VARCHAR(255)")

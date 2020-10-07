@@ -25,7 +25,7 @@ public class Category implements Serializable {
     private String categoryHref;
 
     //@Column(name = "category_adverts")
-    //private Collections<Advert> adverts;
+    //private Collections<Advert> adverts; // TODO Fix OneToMany relationship (Perhaps JoinColumn)
 
     public long getId() {
         return id;
