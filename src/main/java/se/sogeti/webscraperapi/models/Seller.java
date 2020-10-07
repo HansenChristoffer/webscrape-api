@@ -15,16 +15,16 @@ public class Seller implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "seller_name", columnDefinition = "varchar(255)", nullable = false, unique = true)
+    @Column(name = "SELLER_NAME", columnDefinition = "VARCHAR(255)", nullable = false, unique = true)
     private String name;
 
-    @Column(name = "seller_location", columnDefinition = "varchar(255)")
+    @Column(name = "SELLER_LOCATION", columnDefinition = "VARCHAR(255)")
     private String location;
 
-    @Column(name = "seller_registered_date", columnDefinition = "varchar(255)")
+    @Column(name = "SELLER_REGISTERED_DATE", columnDefinition = "VARCHAR(255)")
     private String registered;
 
-    @Column(name = "seller_href", columnDefinition = "varchar(255)")
+    @Column(name = "SELLER_HREF", columnDefinition = "VARCHAR(255)")
     private String sellerHref;
 
     // @Column(name = "seller_adverts")
