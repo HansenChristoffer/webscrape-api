@@ -11,7 +11,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 @Entity
+@JsonIdentityInfo(
+  generator = ObjectIdGenerators.PropertyGenerator.class, 
+  property = "id")
 public class Seller implements Serializable {
 
     public Seller() {}
@@ -30,7 +36,7 @@ public class Seller implements Serializable {
     private static final long serialVersionUID = -6703572985770238904L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @Column(name = "SELLER_NAME", columnDefinition = "VARCHAR(255)", nullable = false, unique = true)
@@ -46,7 +52,7 @@ public class Seller implements Serializable {
     private String sellerHref;
 
     @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Collection<Advert> adverts; // TODO Fix OneToMany relationship (Perhaps JoinColumn)
+    private Collection<Advert> adverts;
 
     public long getId() {
         return id;

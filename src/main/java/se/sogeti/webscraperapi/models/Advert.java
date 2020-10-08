@@ -33,7 +33,7 @@ public class Advert implements Serializable {
     private static final long serialVersionUID = 1331200230166367593L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @Column(name = "ADVERT_NAME", columnDefinition = "VARCHAR(255)")
@@ -89,6 +89,14 @@ public class Advert implements Serializable {
 
     public void setSeller(Seller seller) {
         this.seller = seller;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public String getDescription() {
