@@ -45,6 +45,8 @@ public class AdvertService {
     }
 
     public ResponseEntity<EntityModel<Advert>> createAdvert(Advert newAdvert) {
+        // TODO Check if category exists or not, if not then throw exception otherwise fetch and add to newAdvert
+        // TODO Check if seller !exists then create the user from the info given if possible(Throw exception if not) otherwise fetch and add to newAdvert
         EntityModel<Advert> entityModel = assembler.toModel(repository.save(newAdvert));
 
         return ResponseEntity //
