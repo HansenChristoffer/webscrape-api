@@ -13,11 +13,15 @@ import se.sogeti.webscraperapi.models.Seller;
 @Component
 public class SellerModelAssembler implements RepresentationModelAssembler<Seller, EntityModel<Seller>> {
 
+  private static final String P = "sellers";
+
   @Override
   public EntityModel<Seller> toModel(Seller seller) {
 
     return EntityModel.of(seller, 
         linkTo(methodOn(SellerController.class).findById(seller.getId())).withSelfRel(),
-        linkTo(methodOn(SellerController.class).findAll()).withRel("sellers"));
+        linkTo(methodOn(SellerController.class).findAll()).withRel(P),
+        linkTo(methodOn(SellerController.class).findByName(seller.getName())).withRel(P),
+        linkTo(methodOn(SellerController.class).findByHref(seller.getHref())).withRel(P));
   }
 }

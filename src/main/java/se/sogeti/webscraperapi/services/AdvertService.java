@@ -21,15 +21,15 @@ import se.sogeti.webscraperapi.repositories.AdvertRepository;
 @Service
 public class AdvertService {
 
-    private final AdvertRepository repository;
-    private final AdvertModelAssembler assembler;
+    private AdvertRepository repository;
+    private AdvertModelAssembler assembler;
 
-    AdvertService(AdvertRepository repository, AdvertModelAssembler assembler) {
+    public AdvertService(AdvertRepository repository, AdvertModelAssembler assembler) {
         this.repository = repository;
         this.assembler = assembler;
     }
 
-    public EntityModel<Advert> findById(long id) {
+    public EntityModel<Advert> findById(String id) {
         Advert advert = repository.findById(id) //
                 .orElseThrow(() -> new AdvertNotFoundException(id));
 
@@ -37,20 +37,65 @@ public class AdvertService {
     }
 
     public CollectionModel<EntityModel<Advert>> findAll() {
-        List<EntityModel<Advert>> adverts = repository.findAll().stream()
-                .map(assembler::toModel)
+        List<EntityModel<Advert>> adverts = repository.findAll().stream().map(assembler::toModel)
                 .collect(Collectors.toList());
 
         return CollectionModel.of(adverts, linkTo(methodOn(AdvertController.class).findAll()).withSelfRel());
     }
 
+    public CollectionModel<EntityModel<Advert>> findByName(String name) {
+        List<EntityModel<Advert>> adverts = repository.findByName(name).stream().map(assembler::toModel) //
+                .collect(Collectors.toList());
+
+        return CollectionModel.of(adverts, linkTo(methodOn(AdvertController.class).findByName(name)).withSelfRel());
+    }
+
+    public CollectionModel<EntityModel<Advert>> findByHref(String href) {
+        List<EntityModel<Advert>> adverts = repository.findByHref(href).stream().map(assembler::toModel) //
+                .collect(Collectors.toList());
+
+        return CollectionModel.of(adverts, linkTo(methodOn(AdvertController.class).findByHref(href)).withSelfRel());
+    }
+
     public ResponseEntity<EntityModel<Advert>> createAdvert(Advert newAdvert) {
-        // TODO Check if category exists or not, if not then throw exception otherwise fetch and add to newAdvert
-        // TODO Check if seller !exists then create the user from the info given if possible(Throw exception if not) otherwise fetch and add to newAdvert
+        // TODO Check if category exists or not, if not then throw exception otherwise
+        // fetch and add to newAdvert
+        // TODO Check if seller !exists then create the user from the info given if
+        // possible(Throw exception if not) otherwise fetch and add to newAdvert
         EntityModel<Advert> entityModel = assembler.toModel(repository.save(newAdvert));
 
         return ResponseEntity //
                 .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
                 .body(entityModel);
+    }
+
+    public ResponseEntity<EntityModel<Advert>> replaceAdvert(Advert newAdvert, String id) {
+    
+        Advert updatedAdvert = repository.findById(id) //
+          .map(advert -> {
+            advert.setName(newAdvert.getName());
+            advert.setCategory(newAdvert.getCategory());
+            advert.setDescription(newAdvert.getDescription());
+            advert.setHref(newAdvert.getHref());
+            advert.setObjectNumber(newAdvert.getObjectNumber());
+            advert.setPrice(newAdvert.getPrice());
+            advert.setPublished(newAdvert.getPublished());
+            advert.setSeller(newAdvert.getSeller());
+            return repository.save(advert);
+          }) //
+          .orElseGet(() -> {
+            newAdvert.setId(id);
+            return repository.save(newAdvert);
+          });
+    
+      EntityModel<Advert> entityModel = assembler.toModel(updatedAdvert);
+    
+      return ResponseEntity //
+          .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
+          .body(entityModel);
+    }
+
+    public void deleteAll() {
+        repository.deleteAll();
     }
 }

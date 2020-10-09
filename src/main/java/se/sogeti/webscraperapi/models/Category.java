@@ -3,28 +3,17 @@ package se.sogeti.webscraperapi.models;
 import java.io.Serializable;
 import java.util.Collection;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
-@Entity
-@JsonIdentityInfo(
-  generator = ObjectIdGenerators.PropertyGenerator.class, 
-  property = "id")
+@Document(collection = "scrapes_categories")
 public class Category implements Serializable {
 
     public Category() {}
 
-    public Category(String name, String categoryHref, Collection<Advert> adverts) {
+    public Category(String name, String href, Collection<String> adverts) {
         this.name = name;
-        this.categoryHref = categoryHref;
+        this.href = href;
         this.adverts = adverts;
     }
 
@@ -34,23 +23,19 @@ public class Category implements Serializable {
     private static final long serialVersionUID = -2371741008467000093L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private String id;
 
-    @Column(name = "CATEGORY_NAME", columnDefinition = "VARCHAR(255)", nullable = false, unique = true)
-    private String name;
+    private String name; // TODO Make this unique
 
-    @Column(name = "CATEGORY_HREF", columnDefinition = "VARCHAR(255)", nullable = false, unique = true)
-    private String categoryHref;
+    private String href;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Collection<Advert> adverts;
+    private Collection<String> adverts;
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -62,19 +47,19 @@ public class Category implements Serializable {
         this.name = name;
     }
 
-    public String getCategoryHref() {
-        return categoryHref;
+    public String getHref() {
+        return href;
     }
 
-    public void setCategoryHref(String categoryHref) {
-        this.categoryHref = categoryHref;
+    public void setHref(String href) {
+        this.href = href;
     }
 
-    public Collection<Advert> getAdverts() {
+    public Collection<String> getAdverts() {
         return adverts;
     }
 
-    public void setCollections(Collection<Advert> adverts) {
+    public void setAdverts(Collection<String> adverts) {
         this.adverts = adverts;
     }
 }

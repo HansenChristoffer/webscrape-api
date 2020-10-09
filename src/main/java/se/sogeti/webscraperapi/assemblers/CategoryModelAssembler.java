@@ -13,11 +13,15 @@ import se.sogeti.webscraperapi.models.Category;
 @Component
 public class CategoryModelAssembler implements RepresentationModelAssembler<Category, EntityModel<Category>> {
 
+  private static final String P = "categories";
+
   @Override
   public EntityModel<Category> toModel(Category category) {
 
     return EntityModel.of(category, 
         linkTo(methodOn(CategoryController.class).findById(category.getId())).withSelfRel(),
-        linkTo(methodOn(CategoryController.class).findAll()).withRel("categories"));
+        linkTo(methodOn(CategoryController.class).findAll()).withRel(P),
+        linkTo(methodOn(CategoryController.class).findByName(category.getName())).withRel(P),
+        linkTo(methodOn(CategoryController.class).findByHref(category.getHref())).withRel(P));
   }
 }

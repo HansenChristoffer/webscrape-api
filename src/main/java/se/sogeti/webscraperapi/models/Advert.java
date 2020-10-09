@@ -2,21 +2,17 @@ package se.sogeti.webscraperapi.models;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
+@Document(collection = "scrapes_adverts")
 public class Advert implements Serializable {
 
     public Advert() {}
 
     public Advert(String name, Category category, Seller seller, String description, double price, String published,
-            String objectNumber, String advertHref) {
+            String objectNumber, String href) {
         this.name = name;
         this.category = category;
         this.seller = seller;
@@ -24,7 +20,7 @@ public class Advert implements Serializable {
         this.price = price;
         this.published = published;
         this.objectNumber = objectNumber;
-        this.advertHref = advertHref;
+        this.href = href;
     }
 
     /**
@@ -33,45 +29,35 @@ public class Advert implements Serializable {
     private static final long serialVersionUID = 1331200230166367593L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private String id;
 
-    @Column(name = "ADVERT_NAME", columnDefinition = "VARCHAR(255)")
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "CATEGORY_ID", nullable = false)
-    private Category category;
+    private Category category; // TODO Make this reference as a String category name instead
 
-    @ManyToOne
-    @JoinColumn(name = "SELLER_ID", nullable = false)
-    private Seller seller;
+    private Seller seller; // TODO Make this reference as a String seller name instead
 
-    @Column(name = "ADVERT_DESCRIPTION", columnDefinition = "VARCHAR(255)")
     private String description;
 
-    @Column(name = "ADVERT_PRICE", columnDefinition = "DOUBLE")
     private double price;
 
-    @Column(name = "ADVERT_PUBLISHED", columnDefinition = "VARCHAR(255)")
     private String published;
 
-    @Column(name = "ADVERT_OBJECT_NUMBER", columnDefinition = "VARCHAR(255)")
+    @Indexed(unique = true)
     private String objectNumber;
 
-    @Column(name = "ADVERT_HREF", columnDefinition = "VARCHAR(255)", nullable = false, unique = true)
-    private String advertHref;
+    private String href;
 
     // @Lob
     // @Column(name = "ADVERT_IMAGE", columnDefinition = "BLOB")
     // private byte[] image; // TODO Research and find solution on how or if you
     // should store image in database
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -131,12 +117,12 @@ public class Advert implements Serializable {
         this.objectNumber = objectNumber;
     }
 
-    public String getAdvertHref() {
-        return advertHref;
+    public String getHref() {
+        return href;
     }
 
-    public void setAdvertHref(String advertHref) {
-        this.advertHref = advertHref;
+    public void setHref(String href) {
+        this.href = href;
     }
 
     // public byte[] getImage() {

@@ -1,10 +1,15 @@
 package se.sogeti.webscraperapi.repositories;
 
-import org.springframework.stereotype.Repository;
+import java.util.Collection;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import se.sogeti.webscraperapi.models.Advert;
 
-@Repository
-public interface AdvertRepository extends AbstractRepository<Advert, Long> {
+public interface AdvertRepository extends MongoRepository<Advert, String> {
+
+    public Collection<Advert> findByName(String name);
+
+    public Collection<Advert> findByHref(String href);
 
 }
