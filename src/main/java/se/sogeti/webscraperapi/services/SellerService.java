@@ -76,7 +76,6 @@ public class SellerService {
             seller.setLocation(newSeller.getLocation());
             seller.setRegistered(newSeller.getRegistered());
             seller.setHref(newSeller.getHref());
-            seller.setAdverts(newSeller.getAdverts());
             return repository.save(seller);
           }) //
           .orElseGet(() -> {

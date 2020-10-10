@@ -24,7 +24,7 @@ public class AdvertController {
         this.service = service;
     }
 
-    @GetMapping(value = "/advert/id")
+    @GetMapping(value = "/adverts/id")
     public EntityModel<Advert> findById(@RequestParam String value) {
         return service.findById(value);
     }
@@ -35,21 +35,21 @@ public class AdvertController {
     }
 
     @GetMapping(value = "/adverts/name")
-    public CollectionModel<EntityModel<Advert>> findByName(@RequestParam String value) {
+    public EntityModel<Advert> findByName(@RequestParam String value) {
         return service.findByName(value);
     }
 
     @GetMapping(value = "/adverts/href")
-    public CollectionModel<EntityModel<Advert>> findByHref(@RequestParam String value) {
+    public EntityModel<Advert> findByHref(@RequestParam String value) {
         return service.findByHref(value);
     }
 
-    @PostMapping(value = "/advert")
+    @PostMapping(value = "/adverts")
     public ResponseEntity<EntityModel<Advert>> createAdvert(@RequestBody Advert newAdvert) {
         return service.createAdvert(newAdvert);
     }
 
-    @PutMapping(value = "/advert/id")
+    @PutMapping(value = "/adverts/id")
     public ResponseEntity<EntityModel<Advert>> replaceAdvert(@RequestBody Advert newAdvert, @RequestParam String value) {
         return service.replaceAdvert(newAdvert, value);
     }

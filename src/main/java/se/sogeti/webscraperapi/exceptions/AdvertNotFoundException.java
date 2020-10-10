@@ -9,5 +9,5 @@ public class AdvertNotFoundException extends RuntimeException {
 
     public AdvertNotFoundException(String id) {
         super("Could not find advert with id, " + id);
-    }    
+    }
 }

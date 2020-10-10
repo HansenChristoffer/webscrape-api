@@ -24,7 +24,7 @@ public class CategoryController {
         this.service = service;
     }
 
-    @GetMapping(value = "/category/id")
+    @GetMapping(value = "/categories/id")
     public EntityModel<Category> findById(@RequestParam String value) {
         return service.findById(value);
     }
@@ -39,23 +39,18 @@ public class CategoryController {
         return service.findByName(value);
     }
 
-    @GetMapping(value = "/category/href")
+    @GetMapping(value = "/categories/href")
     public CollectionModel<EntityModel<Category>> findByHref(@RequestParam String value) {
         return service.findByHref(value);
     }
 
-    @PostMapping(value = "/category")
+    @PostMapping(value = "/categories")
     public ResponseEntity<EntityModel<Category>> createCategory(@RequestBody Category newCategory) {
         return service.createCategory(newCategory);
     }
 
-    @PutMapping(value = "/category/id")
+    @PutMapping(value = "/categories/id")
     public ResponseEntity<EntityModel<Category>> replaceCategory(@RequestBody Category newCategory, @RequestParam String value) {
         return service.replaceCategory(newCategory, value);
-    }
-
-    @PutMapping(value = "/category/addadvert")
-    public ResponseEntity<EntityModel<Category>> addAdvert(String categoryId, String advertId) {
-        return service.addAdvert(categoryId, advertId);
     }
 }

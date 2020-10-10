@@ -1,9 +1,9 @@
 package se.sogeti.webscraperapi.models;
 
 import java.io.Serializable;
-import java.util.Collection;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "scrapes_sellers")
@@ -12,12 +12,11 @@ public class Seller implements Serializable {
     public Seller() {
     }
 
-    public Seller(String name, String location, String registered, String href, Collection<String> adverts) {
+    public Seller(String name, String location, String registered, String href) {
         this.name = name;
         this.location = location;
         this.registered = registered;
         this.href = href;
-        this.adverts = adverts;
     }
 
     /**
@@ -28,15 +27,14 @@ public class Seller implements Serializable {
     @Id
     private String id;
 
-    private String name; // TODO Make this unique
+    @Indexed(unique = true)
+    private String name;
 
     private String location;
 
     private String registered;
 
     private String href;
-
-    private Collection<String> adverts;
 
     public String getId() {
         return id;
@@ -76,13 +74,5 @@ public class Seller implements Serializable {
 
     public void setHref(String href) {
         this.href = href;
-    }
-
-    public Collection<String> getAdverts() {
-        return adverts;
-    }
-
-    public void setAdverts(Collection<String> adverts) {
-        this.adverts = adverts;
     }
 }

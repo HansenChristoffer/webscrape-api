@@ -11,11 +11,11 @@ public class Advert implements Serializable {
 
     public Advert() {}
 
-    public Advert(String name, Category category, Seller seller, String description, double price, String published,
+    public Advert(String name, String categoryName, String sellerName, String description, double price, String published,
             String objectNumber, String href) {
         this.name = name;
-        this.category = category;
-        this.seller = seller;
+        this.categoryName = categoryName;
+        this.sellerName = sellerName;
         this.description = description;
         this.price = price;
         this.published = published;
@@ -33,9 +33,9 @@ public class Advert implements Serializable {
 
     private String name;
 
-    private Category category; // TODO Make this reference as a String category name instead
+    private String categoryName;
 
-    private Seller seller; // TODO Make this reference as a String seller name instead
+    private String sellerName;
 
     private String description;
 
@@ -69,20 +69,20 @@ public class Advert implements Serializable {
         this.name = name;
     }
 
-    public Seller getSeller() {
-        return seller;
+    public String getSellerName() {
+        return sellerName;
     }
 
-    public void setSeller(Seller seller) {
-        this.seller = seller;
+    public void setSellerName(String sellerName) {
+        this.sellerName = sellerName;
     }
 
-    public Category getCategory() {
-        return category;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public String getDescription() {

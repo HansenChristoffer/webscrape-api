@@ -17,11 +17,12 @@ public class AdvertModelAssembler implements RepresentationModelAssembler<Advert
 
   @Override
   public EntityModel<Advert> toModel(Advert advert) {
-
     return EntityModel.of(advert, 
         linkTo(methodOn(AdvertController.class).findById(advert.getId())).withSelfRel(),
         linkTo(methodOn(AdvertController.class).findAll()).withRel(P),
-        linkTo(methodOn(AdvertController.class).findByName(advert.getName())).withRel(P),
-        linkTo(methodOn(AdvertController.class).findByHref(advert.getHref())).withRel(P));
+        linkTo(methodOn(AdvertController.class).findByName(advert.getName())).withSelfRel(),
+        linkTo(methodOn(AdvertController.class).findByHref(advert.getHref())).withSelfRel(),
+        linkTo(methodOn(AdvertController.class).createAdvert(new Advert())).withSelfRel(),
+        linkTo(methodOn(AdvertController.class).replaceAdvert(new Advert(), advert.getId())).withSelfRel());
   }
 }

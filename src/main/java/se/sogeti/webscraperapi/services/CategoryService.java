@@ -25,13 +25,11 @@ import se.sogeti.webscraperapi.repositories.CategoryRepository;
 public class CategoryService {
 
     private final CategoryRepository repository;
-    private final AdvertRepository adRepo;
     private final CategoryModelAssembler assembler;
 
-    CategoryService(CategoryRepository repository, AdvertRepository adRepo, CategoryModelAssembler assembler) {
+    CategoryService(CategoryRepository repository, CategoryModelAssembler assembler) {
         this.repository = repository;
         this.assembler = assembler;
-        this.adRepo = adRepo;
     }
 
     public EntityModel<Category> findById(String id) {
@@ -79,7 +77,6 @@ public class CategoryService {
           .map(category -> {
             category.setName(newCategory.getName());
             category.setHref(newCategory.getHref());
-            category.setAdverts(newCategory.getAdverts());
             return repository.save(category);
           }) //
           .orElseGet(() -> {
@@ -92,23 +89,6 @@ public class CategoryService {
       return ResponseEntity //
           .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
           .body(entityModel);
-    }
-
-    public ResponseEntity<EntityModel<Category>> addAdvert(String categoryId, String advertId) {
-        Category category = repository.findById(categoryId) //
-                .orElseThrow(() -> new CategoryNotFoundException(categoryId));
-
-        Advert advert = adRepo.findById(advertId) //
-                .orElseThrow(() -> new AdvertNotFoundException(advertId));
-
-        category.getAdverts().add(advert.getId());
-        repository.save(category);
-        
-        EntityModel<Category> entityModel = assembler.toModel(category);
-    
-        return ResponseEntity //
-            .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-            .body(entityModel);
     }
 
     public void deleteAll() {

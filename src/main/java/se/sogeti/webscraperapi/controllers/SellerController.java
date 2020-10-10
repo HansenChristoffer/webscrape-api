@@ -24,7 +24,7 @@ public class SellerController {
         this.service = service;
     }
 
-    @GetMapping(value = "/seller/id")
+    @GetMapping(value = "/sellers/id")
     public EntityModel<Seller> findById(@RequestParam String value) {
         return service.findById(value);
     }
@@ -44,12 +44,12 @@ public class SellerController {
         return service.findByHref(value);
     }
 
-    @PostMapping(value = "/seller")
+    @PostMapping(value = "/sellers")
     public ResponseEntity<EntityModel<Seller>> createSeller(@RequestBody Seller newSeller) {
         return service.createSeller(newSeller);
     }
 
-    @PutMapping(value = "/seller/id")
+    @PutMapping(value = "/sellers/id")
     public ResponseEntity<EntityModel<Seller>> replaceSeller(@RequestBody Seller newSeller, @RequestParam String value) {
         return service.replaceSeller(newSeller, value);
     }

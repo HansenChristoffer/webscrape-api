@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import se.sogeti.webscraperapi.assemblers.AdvertModelAssembler;
 import se.sogeti.webscraperapi.controllers.AdvertController;
+import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
 import se.sogeti.webscraperapi.exceptions.AdvertNotFoundException;
 import se.sogeti.webscraperapi.models.Advert;
 import se.sogeti.webscraperapi.repositories.AdvertRepository;
@@ -43,18 +44,18 @@ public class AdvertService {
         return CollectionModel.of(adverts, linkTo(methodOn(AdvertController.class).findAll()).withSelfRel());
     }
 
-    public CollectionModel<EntityModel<Advert>> findByName(String name) {
-        List<EntityModel<Advert>> adverts = repository.findByName(name).stream().map(assembler::toModel) //
-                .collect(Collectors.toList());
+    public EntityModel<Advert> findByName(String name) {
+        Advert advert = repository.findByName(name) //
+                .orElseThrow(() -> new AbstractNotFoundException(name));
 
-        return CollectionModel.of(adverts, linkTo(methodOn(AdvertController.class).findByName(name)).withSelfRel());
+        return assembler.toModel(advert);
     }
 
-    public CollectionModel<EntityModel<Advert>> findByHref(String href) {
-        List<EntityModel<Advert>> adverts = repository.findByHref(href).stream().map(assembler::toModel) //
-                .collect(Collectors.toList());
+    public EntityModel<Advert> findByHref(String href) {
+        Advert advert = repository.findByHref(href) //
+                .orElseThrow(() -> new AbstractNotFoundException(href));
 
-        return CollectionModel.of(adverts, linkTo(methodOn(AdvertController.class).findByHref(href)).withSelfRel());
+        return assembler.toModel(advert);
     }
 
     public ResponseEntity<EntityModel<Advert>> createAdvert(Advert newAdvert) {
@@ -70,29 +71,29 @@ public class AdvertService {
     }
 
     public ResponseEntity<EntityModel<Advert>> replaceAdvert(Advert newAdvert, String id) {
-    
+
         Advert updatedAdvert = repository.findById(id) //
-          .map(advert -> {
-            advert.setName(newAdvert.getName());
-            advert.setCategory(newAdvert.getCategory());
-            advert.setDescription(newAdvert.getDescription());
-            advert.setHref(newAdvert.getHref());
-            advert.setObjectNumber(newAdvert.getObjectNumber());
-            advert.setPrice(newAdvert.getPrice());
-            advert.setPublished(newAdvert.getPublished());
-            advert.setSeller(newAdvert.getSeller());
-            return repository.save(advert);
-          }) //
-          .orElseGet(() -> {
-            newAdvert.setId(id);
-            return repository.save(newAdvert);
-          });
-    
-      EntityModel<Advert> entityModel = assembler.toModel(updatedAdvert);
-    
-      return ResponseEntity //
-          .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-          .body(entityModel);
+                .map(advert -> {
+                    advert.setName(newAdvert.getName());
+                    advert.setCategoryName(newAdvert.getCategoryName());
+                    advert.setDescription(newAdvert.getDescription());
+                    advert.setHref(newAdvert.getHref());
+                    advert.setObjectNumber(newAdvert.getObjectNumber());
+                    advert.setPrice(newAdvert.getPrice());
+                    advert.setPublished(newAdvert.getPublished());
+                    advert.setSellerName(newAdvert.getSellerName());
+                    return repository.save(advert);
+                }) //
+                .orElseGet(() -> {
+                    newAdvert.setId(id);
+                    return repository.save(newAdvert);
+                });
+
+        EntityModel<Advert> entityModel = assembler.toModel(updatedAdvert);
+
+        return ResponseEntity //
+                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
+                .body(entityModel);
     }
 
     public void deleteAll() {
