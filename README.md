@@ -29,3 +29,4 @@ If you require help on how to install MongoDB, do please refer to the [Official 
  
  # Authors
   - Christoffer Hansen [Github](https://github.com/HansenChristoffer)
+  - Mattias Andersen [Github](https://github.com/SiggeCinnamon)
