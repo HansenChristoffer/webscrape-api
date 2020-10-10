@@ -2,29 +2,25 @@ package se.sogeti.webscraperapi.models;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
+@Document(collection = "scrapes_adverts")
 public class Advert implements Serializable {
 
     public Advert() {}
 
-    public Advert(String name, Category category, Seller seller, String description, double price, String published,
-            String objectNumber, String advertHref) {
+    public Advert(String name, String categoryName, String sellerName, String description, double price, String published,
+            String objectNumber, String href) {
         this.name = name;
-        this.category = category;
-        this.seller = seller;
+        this.categoryName = categoryName;
+        this.sellerName = sellerName;
         this.description = description;
         this.price = price;
         this.published = published;
         this.objectNumber = objectNumber;
-        this.advertHref = advertHref;
+        this.href = href;
     }
 
     /**
@@ -33,45 +29,35 @@ public class Advert implements Serializable {
     private static final long serialVersionUID = 1331200230166367593L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private String id;
 
-    @Column(name = "ADVERT_NAME", columnDefinition = "VARCHAR(255)")
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "CATEGORY_ID", nullable = false)
-    private Category category;
+    private String categoryName;
 
-    @ManyToOne
-    @JoinColumn(name = "SELLER_ID", nullable = false)
-    private Seller seller;
+    private String sellerName;
 
-    @Column(name = "ADVERT_DESCRIPTION", columnDefinition = "VARCHAR(255)")
     private String description;
 
-    @Column(name = "ADVERT_PRICE", columnDefinition = "DOUBLE")
     private double price;
 
-    @Column(name = "ADVERT_PUBLISHED", columnDefinition = "VARCHAR(255)")
     private String published;
 
-    @Column(name = "ADVERT_OBJECT_NUMBER", columnDefinition = "VARCHAR(255)")
+    @Indexed(unique = true)
     private String objectNumber;
 
-    @Column(name = "ADVERT_HREF", columnDefinition = "VARCHAR(255)", nullable = false, unique = true)
-    private String advertHref;
+    private String href;
 
     // @Lob
     // @Column(name = "ADVERT_IMAGE", columnDefinition = "BLOB")
     // private byte[] image; // TODO Research and find solution on how or if you
     // should store image in database
 
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -83,12 +69,20 @@ public class Advert implements Serializable {
         this.name = name;
     }
 
-    public Seller getSeller() {
-        return seller;
+    public String getSellerName() {
+        return sellerName;
     }
 
-    public void setSeller(Seller seller) {
-        this.seller = seller;
+    public void setSellerName(String sellerName) {
+        this.sellerName = sellerName;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public String getDescription() {
@@ -123,12 +117,12 @@ public class Advert implements Serializable {
         this.objectNumber = objectNumber;
     }
 
-    public String getAdvertHref() {
-        return advertHref;
+    public String getHref() {
+        return href;
     }
 
-    public void setAdvertHref(String advertHref) {
-        this.advertHref = advertHref;
+    public void setHref(String href) {
+        this.href = href;
     }
 
     // public byte[] getImage() {

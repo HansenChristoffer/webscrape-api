@@ -1,27 +1,22 @@
 package se.sogeti.webscraperapi.models;
 
 import java.io.Serializable;
-import java.util.Collection;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
+@Document(collection = "scrapes_sellers")
 public class Seller implements Serializable {
 
-    public Seller() {}
+    public Seller() {
+    }
 
-    public Seller(String name, String location, String registered, String sellerHref, Collection<Advert> adverts) {
+    public Seller(String name, String location, String registered, String href) {
         this.name = name;
         this.location = location;
         this.registered = registered;
-        this.sellerHref = sellerHref;
-        this.adverts = adverts;
+        this.href = href;
     }
 
     /**
@@ -30,29 +25,22 @@ public class Seller implements Serializable {
     private static final long serialVersionUID = -6703572985770238904L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private String id;
 
-    @Column(name = "SELLER_NAME", columnDefinition = "VARCHAR(255)", nullable = false, unique = true)
+    @Indexed(unique = true)
     private String name;
 
-    @Column(name = "SELLER_LOCATION", columnDefinition = "VARCHAR(255)")
     private String location;
 
-    @Column(name = "SELLER_REGISTERED_DATE", columnDefinition = "VARCHAR(255)")
     private String registered;
 
-    @Column(name = "SELLER_HREF", columnDefinition = "VARCHAR(255)")
-    private String sellerHref;
+    private String href;
 
-    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Collection<Advert> adverts; // TODO Fix OneToMany relationship (Perhaps JoinColumn)
-
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -80,19 +68,11 @@ public class Seller implements Serializable {
         this.registered = registered;
     }
 
-    public String getSellerHref() {
-        return sellerHref;
+    public String getHref() {
+        return href;
     }
 
-    public void setSellerHref(String sellerHref) {
-        this.sellerHref = sellerHref;
-    }
-
-    public Collection<Advert> getAdverts() {
-        return adverts;
-    }
-
-    public void setCollections(Collection<Advert> adverts) {
-        this.adverts = adverts;
+    public void setHref(String href) {
+        this.href = href;
     }
 }

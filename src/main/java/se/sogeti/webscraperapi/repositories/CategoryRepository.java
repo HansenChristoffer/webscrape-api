@@ -1,10 +1,15 @@
 package se.sogeti.webscraperapi.repositories;
 
-import org.springframework.stereotype.Repository;
+import java.util.Optional;
+
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import se.sogeti.webscraperapi.models.Category;
 
-@Repository
-public interface CategoryRepository extends AbstractRepository<Category, Long> {
+public interface CategoryRepository extends MongoRepository<Category, String> {
+
+    public Optional<Category> findByName(String name);
+
+    public Optional<Category> findByHref(String href);
 
 }

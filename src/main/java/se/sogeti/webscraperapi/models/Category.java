@@ -1,25 +1,19 @@
 package se.sogeti.webscraperapi.models;
 
 import java.io.Serializable;
-import java.util.Collection;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
+@Document(collection = "scrapes_categories")
 public class Category implements Serializable {
 
     public Category() {}
 
-    public Category(String name, String categoryHref, Collection<Advert> adverts) {
+    public Category(String name, String href) {
         this.name = name;
-        this.categoryHref = categoryHref;
-        this.adverts = adverts;
+        this.href = href;
     }
 
     /**
@@ -28,23 +22,18 @@ public class Category implements Serializable {
     private static final long serialVersionUID = -2371741008467000093L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private String id;
 
-    @Column(name = "CATEGORY_NAME", columnDefinition = "VARCHAR(255)", nullable = false, unique = true)
+    @Indexed(unique = true)
     private String name;
 
-    @Column(name = "CATEGORY_HREF", columnDefinition = "VARCHAR(255)", nullable = false, unique = true)
-    private String categoryHref;
+    private String href;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Collection<Advert> adverts; // TODO Fix OneToMany relationship (Perhaps JoinColumn)
-
-    public long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -56,19 +45,11 @@ public class Category implements Serializable {
         this.name = name;
     }
 
-    public String getCategoryHref() {
-        return categoryHref;
+    public String getHref() {
+        return href;
     }
 
-    public void setCategoryHref(String categoryHref) {
-        this.categoryHref = categoryHref;
-    }
-
-    public Collection<Advert> getAdverts() {
-        return adverts;
-    }
-
-    public void setCollections(Collection<Advert> adverts) {
-        this.adverts = adverts;
+    public void setHref(String href) {
+        this.href = href;
     }
 }
