@@ -18,7 +18,7 @@ Just remember to go into application.properties folder and change the ip to the 
 
 If you require help on how to install MongoDB, do please refer to the [Official MongoDB documentation](https://docs.mongodb.com/manual/introduction).<br>
 
-# How to start
+# Getting started
  1. Press the green "Code" button
  2. Either use the link with Git clone or download the zip
     - If you've downloaded the zip then extract it where you want to save the webscraper
