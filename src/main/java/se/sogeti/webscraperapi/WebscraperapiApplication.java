@@ -9,4 +9,5 @@ public class WebscraperapiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(WebscraperapiApplication.class, args);
 	}
+
 }
