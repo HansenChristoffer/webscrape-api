@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import se.sogeti.webscraperapi.assemblers.SellerModelAssembler;
 import se.sogeti.webscraperapi.controllers.SellerController;
-import se.sogeti.webscraperapi.exceptions.SellerNotFoundException;
+import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
 import se.sogeti.webscraperapi.models.Seller;
 import se.sogeti.webscraperapi.repositories.SellerRepository;
 
@@ -31,7 +31,7 @@ public class SellerService {
 
     public EntityModel<Seller> findById(String id) {
         Seller seller = repository.findById(id) //
-                .orElseThrow(() -> new SellerNotFoundException(id));
+                .orElseThrow(() -> new AbstractNotFoundException(id));
 
         return assembler.toModel(seller);
     }
@@ -44,20 +44,18 @@ public class SellerService {
         return CollectionModel.of(sellers, linkTo(methodOn(SellerController.class).findAll()).withSelfRel());
     }
 
-    public CollectionModel<EntityModel<Seller>> findByName(String name) {
-        List<EntityModel<Seller>> sellers = repository.findByName(name).stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
+    public EntityModel<Seller> findByName(String name) {
+        Seller seller = repository.findByName(name) //
+                .orElseThrow(() -> new AbstractNotFoundException(name));
 
-        return CollectionModel.of(sellers, linkTo(methodOn(SellerController.class).findByName(name)).withSelfRel());
+        return assembler.toModel(seller);
     }
 
-    public CollectionModel<EntityModel<Seller>> findByHref(String href) {
-        List<EntityModel<Seller>> sellers = repository.findByHref(href).stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
+    public EntityModel<Seller> findByHref(String href) {
+        Seller seller = repository.findByHref(href) //
+                .orElseThrow(() -> new AbstractNotFoundException(href));
 
-        return CollectionModel.of(sellers, linkTo(methodOn(SellerController.class).findByHref(href)).withSelfRel());
+        return assembler.toModel(seller);
     }
 
     public ResponseEntity<EntityModel<Seller>> createSeller(Seller newSeller) {

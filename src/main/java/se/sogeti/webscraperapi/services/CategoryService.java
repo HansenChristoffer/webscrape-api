@@ -14,11 +14,8 @@ import org.springframework.stereotype.Service;
 
 import se.sogeti.webscraperapi.assemblers.CategoryModelAssembler;
 import se.sogeti.webscraperapi.controllers.CategoryController;
-import se.sogeti.webscraperapi.exceptions.AdvertNotFoundException;
-import se.sogeti.webscraperapi.exceptions.CategoryNotFoundException;
-import se.sogeti.webscraperapi.models.Advert;
+import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
 import se.sogeti.webscraperapi.models.Category;
-import se.sogeti.webscraperapi.repositories.AdvertRepository;
 import se.sogeti.webscraperapi.repositories.CategoryRepository;
 
 @Service
@@ -34,7 +31,7 @@ public class CategoryService {
 
     public EntityModel<Category> findById(String id) {
         Category category = repository.findById(id) //
-                .orElseThrow(() -> new CategoryNotFoundException(id));
+                .orElseThrow(() -> new AbstractNotFoundException(id));
 
         return assembler.toModel(category);
     }
@@ -47,20 +44,18 @@ public class CategoryService {
         return CollectionModel.of(categories, linkTo(methodOn(CategoryController.class).findAll()).withSelfRel());
     }
 
-    public CollectionModel<EntityModel<Category>> findByName(String name) {
-        List<EntityModel<Category>> categories = repository.findByName(name).stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
+    public EntityModel<Category> findByName(String name) {
+        Category category = repository.findByName(name) //
+                .orElseThrow(() -> new AbstractNotFoundException(name));
 
-        return CollectionModel.of(categories, linkTo(methodOn(CategoryController.class).findByName(name)).withSelfRel());
+                return assembler.toModel(category);
     }
 
-    public CollectionModel<EntityModel<Category>> findByHref(String href) {
-        List<EntityModel<Category>> categories = repository.findByHref(href).stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
+    public EntityModel<Category> findByHref(String href) {
+        Category category = repository.findByHref(href) //
+                .orElseThrow(() -> new AbstractNotFoundException(href));
 
-        return CollectionModel.of(categories, linkTo(methodOn(CategoryController.class).findByHref(href)).withSelfRel());
+                return assembler.toModel(category);
     }
 
     public ResponseEntity<EntityModel<Category>> createCategory(Category newCategory) {

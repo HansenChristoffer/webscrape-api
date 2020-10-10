@@ -44,6 +44,11 @@ public class AdvertController {
         return service.findByHref(value);
     }
 
+    @GetMapping(value = "/adverts/obn")
+    public EntityModel<Advert> findByObjectNumber(@RequestParam String value) {
+        return service.findByObjectNumber(value);
+    }
+
     @PostMapping(value = "/adverts")
     public ResponseEntity<EntityModel<Advert>> createAdvert(@RequestBody Advert newAdvert) {
         return service.createAdvert(newAdvert);

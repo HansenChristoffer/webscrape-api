@@ -35,12 +35,12 @@ public class CategoryController {
     }
 
     @GetMapping(value = "/categories/name")
-    public CollectionModel<EntityModel<Category>> findByName(@RequestParam String value) {
+    public EntityModel<Category> findByName(@RequestParam String value) {
         return service.findByName(value);
     }
 
     @GetMapping(value = "/categories/href")
-    public CollectionModel<EntityModel<Category>> findByHref(@RequestParam String value) {
+    public EntityModel<Category> findByHref(@RequestParam String value) {
         return service.findByHref(value);
     }
 

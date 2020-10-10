@@ -21,7 +21,9 @@ public class SellerModelAssembler implements RepresentationModelAssembler<Seller
     return EntityModel.of(seller, 
         linkTo(methodOn(SellerController.class).findById(seller.getId())).withSelfRel(),
         linkTo(methodOn(SellerController.class).findAll()).withRel(P),
-        linkTo(methodOn(SellerController.class).findByName(seller.getName())).withRel(P),
-        linkTo(methodOn(SellerController.class).findByHref(seller.getHref())).withRel(P));
+        linkTo(methodOn(SellerController.class).findByName(seller.getName())).withSelfRel(),
+        linkTo(methodOn(SellerController.class).findByHref(seller.getHref())).withSelfRel(),
+        linkTo(methodOn(SellerController.class).createSeller(seller)).withSelfRel(),
+        linkTo(methodOn(SellerController.class).replaceSeller(new Seller(), seller.getId())).withSelfRel());
   }
 }

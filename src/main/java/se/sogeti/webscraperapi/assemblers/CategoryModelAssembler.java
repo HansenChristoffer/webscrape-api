@@ -21,7 +21,9 @@ public class CategoryModelAssembler implements RepresentationModelAssembler<Cate
     return EntityModel.of(category, 
         linkTo(methodOn(CategoryController.class).findById(category.getId())).withSelfRel(),
         linkTo(methodOn(CategoryController.class).findAll()).withRel(P),
-        linkTo(methodOn(CategoryController.class).findByName(category.getName())).withRel(P),
-        linkTo(methodOn(CategoryController.class).findByHref(category.getHref())).withRel(P));
+        linkTo(methodOn(CategoryController.class).findByName(category.getName())).withSelfRel(),
+        linkTo(methodOn(CategoryController.class).findByHref(category.getHref())).withSelfRel(),
+        linkTo(methodOn(CategoryController.class).createCategory(category)).withSelfRel(),
+        linkTo(methodOn(CategoryController.class).replaceCategory(new Category(), category.getId())).withSelfRel());
   }
 }

@@ -15,24 +15,30 @@ import org.springframework.stereotype.Service;
 import se.sogeti.webscraperapi.assemblers.AdvertModelAssembler;
 import se.sogeti.webscraperapi.controllers.AdvertController;
 import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
-import se.sogeti.webscraperapi.exceptions.AdvertNotFoundException;
 import se.sogeti.webscraperapi.models.Advert;
 import se.sogeti.webscraperapi.repositories.AdvertRepository;
+import se.sogeti.webscraperapi.repositories.CategoryRepository;
+import se.sogeti.webscraperapi.repositories.SellerRepository;
 
 @Service
 public class AdvertService {
 
     private AdvertRepository repository;
+    private CategoryRepository categoryRepository;
+    private SellerRepository sellerRepository;
     private AdvertModelAssembler assembler;
 
-    public AdvertService(AdvertRepository repository, AdvertModelAssembler assembler) {
+    public AdvertService(AdvertRepository repository, CategoryRepository categoryRepository,
+            SellerRepository sellerRepository, AdvertModelAssembler assembler) {
         this.repository = repository;
+        this.categoryRepository = categoryRepository;
+        this.sellerRepository = sellerRepository;
         this.assembler = assembler;
     }
 
     public EntityModel<Advert> findById(String id) {
         Advert advert = repository.findById(id) //
-                .orElseThrow(() -> new AdvertNotFoundException(id));
+                .orElseThrow(() -> new AbstractNotFoundException(id));
 
         return assembler.toModel(advert);
     }
@@ -58,11 +64,20 @@ public class AdvertService {
         return assembler.toModel(advert);
     }
 
+    public EntityModel<Advert> findByObjectNumber(String objectNumber) {
+        Advert advert = repository.findByObjectNumber(objectNumber)
+                .orElseThrow(() -> new AbstractNotFoundException(objectNumber));
+
+        return assembler.toModel(advert);
+    }
+
     public ResponseEntity<EntityModel<Advert>> createAdvert(Advert newAdvert) {
-        // TODO Check if category exists or not, if not then throw exception otherwise
-        // fetch and add to newAdvert
-        // TODO Check if seller !exists then create the user from the info given if
-        // possible(Throw exception if not) otherwise fetch and add to newAdvert
+        categoryRepository.findByName(newAdvert.getCategoryName())
+                .orElseThrow(() -> new AbstractNotFoundException(newAdvert.getCategoryName()));
+                
+        sellerRepository.findByName(newAdvert.getSellerName())
+                .orElseThrow(() -> new AbstractNotFoundException(newAdvert.getSellerName()));
+
         EntityModel<Advert> entityModel = assembler.toModel(repository.save(newAdvert));
 
         return ResponseEntity //

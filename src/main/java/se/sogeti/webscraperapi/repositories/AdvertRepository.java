@@ -12,4 +12,6 @@ public interface AdvertRepository extends MongoRepository<Advert, String> {
 
     public Optional<Advert> findByHref(String href);
 
+    public Optional<Advert> findByObjectNumber(String objectNumber);
+
 }

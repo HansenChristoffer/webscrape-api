@@ -22,7 +22,8 @@ public class AdvertModelAssembler implements RepresentationModelAssembler<Advert
         linkTo(methodOn(AdvertController.class).findAll()).withRel(P),
         linkTo(methodOn(AdvertController.class).findByName(advert.getName())).withSelfRel(),
         linkTo(methodOn(AdvertController.class).findByHref(advert.getHref())).withSelfRel(),
-        linkTo(methodOn(AdvertController.class).createAdvert(new Advert())).withSelfRel(),
-        linkTo(methodOn(AdvertController.class).replaceAdvert(new Advert(), advert.getId())).withSelfRel());
+        linkTo(methodOn(AdvertController.class).createAdvert(advert)).withSelfRel(),
+        linkTo(methodOn(AdvertController.class).replaceAdvert(new Advert(), advert.getId())).withSelfRel(),
+        linkTo(methodOn(AdvertController.class).findByObjectNumber(advert.getObjectNumber())).withSelfRel());
   }
 }

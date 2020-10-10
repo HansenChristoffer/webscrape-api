@@ -35,12 +35,12 @@ public class SellerController {
     }
 
     @GetMapping(value = "/sellers/name")
-    public CollectionModel<EntityModel<Seller>> findByName(@RequestParam String value) {
+    public EntityModel<Seller> findByName(@RequestParam String value) {
         return service.findByName(value);
     }
 
     @GetMapping(value = "/sellers/href")
-    public CollectionModel<EntityModel<Seller>> findByHref(@RequestParam String value) {
+    public EntityModel<Seller> findByHref(@RequestParam String value) {
         return service.findByHref(value);
     }
 
