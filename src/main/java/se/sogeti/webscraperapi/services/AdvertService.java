@@ -3,6 +3,7 @@ package se.sogeti.webscraperapi.services;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -77,6 +78,9 @@ public class AdvertService {
                 
         sellerRepository.findByName(newAdvert.getSellerName())
                 .orElseThrow(() -> new AbstractNotFoundException(newAdvert.getSellerName()));
+
+        // 
+        newAdvert.setAddedDate(Instant.now());
 
         EntityModel<Advert> entityModel = assembler.toModel(repository.save(newAdvert));
 

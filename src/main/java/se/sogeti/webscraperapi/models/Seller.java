@@ -1,10 +1,13 @@
 package se.sogeti.webscraperapi.models;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 @Document(collection = "scrapes_sellers")
 public class Seller implements Serializable {
@@ -35,6 +38,9 @@ public class Seller implements Serializable {
     private String registered;
 
     private String href;
+
+    @DateTimeFormat(iso=ISO.DATE_TIME)
+    private Instant addedDate;
 
     public String getId() {
         return id;
@@ -75,4 +81,13 @@ public class Seller implements Serializable {
     public void setHref(String href) {
         this.href = href;
     }
+
+    public Instant getAddedDate() {
+        return addedDate;
+    }
+
+    public void setAddedDate(Instant addedDate) {
+        this.addedDate = addedDate;
+    }
+
 }

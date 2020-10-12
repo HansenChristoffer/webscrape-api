@@ -3,6 +3,7 @@ package se.sogeti.webscraperapi.services;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,6 +60,8 @@ public class SellerService {
     }
 
     public ResponseEntity<EntityModel<Seller>> createSeller(Seller newSeller) {
+        newSeller.setAddedDate(Instant.now());
+
         EntityModel<Seller> entityModel = assembler.toModel(repository.save(newSeller));
 
         return ResponseEntity //
