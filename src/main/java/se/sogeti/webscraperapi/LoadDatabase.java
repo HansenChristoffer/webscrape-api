@@ -7,9 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import lombok.extern.slf4j.Slf4j;
 import se.sogeti.webscraperapi.models.Advert;
 import se.sogeti.webscraperapi.models.Category;
+import se.sogeti.webscraperapi.models.Link;
 import se.sogeti.webscraperapi.models.Seller;
 import se.sogeti.webscraperapi.services.AdvertService;
 import se.sogeti.webscraperapi.services.CategoryService;
+import se.sogeti.webscraperapi.services.LinkService;
 import se.sogeti.webscraperapi.services.SellerService;
 
 @Slf4j
@@ -18,23 +20,31 @@ public class LoadDatabase {
 
   @Bean
   CommandLineRunner initDatabase(CategoryService categoryService, SellerService sellerService,
-      AdvertService advertService) {
+      AdvertService advertService, LinkService linkService) {
 
     final String PRELOAD = "<$> Preloading : ";
 
     return args -> {
-      // Delete all first
-      advertService.deleteAll();
+      // Clear database
+      linkService.deleteAll();
       sellerService.deleteAll();
       categoryService.deleteAll();
-      // Seller first
+      advertService.deleteAll();
+      
+      // Links
+      Link mockLink = new Link("https://www.mocklink.io/coolstuff");
+      log.info("{}{}", PRELOAD, linkService.createLink(mockLink));
+      
+      // Sellers
       Seller mockSeller = new Seller("mockSeller", "location", "registered", "sellerHref");
       sellerService.createSeller(mockSeller);
       log.info("{}{}", PRELOAD, sellerService.createSeller(mockSeller));
-      // Category second
+      
+      // Categories
       Category mockCategory = new Category("mockCategory", "categoryHref");
       log.info("{}{}", PRELOAD, categoryService.createCategory(mockCategory));
-      // Adverts last
+      
+      // Adverts
       Advert mockAdvertOne = new Advert("mockAdvertOne", mockCategory.getName(), mockSeller.getName(), "description", 1000.0, "published",
           "98348748", "mockAdvertOne");
       Advert mockAdvertTwo = new Advert("mockAdvertTwo", mockCategory.getName(), mockSeller.getName(), "description", 1000.0, "published",
