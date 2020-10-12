@@ -3,6 +3,7 @@ package se.sogeti.webscraperapi.services;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -59,6 +60,8 @@ public class CategoryService {
     }
 
     public ResponseEntity<EntityModel<Category>> createCategory(Category newCategory) {
+        newCategory.setAddedDate(Instant.now());
+
         EntityModel<Category> entityModel = assembler.toModel(repository.save(newCategory));
 
         return ResponseEntity //

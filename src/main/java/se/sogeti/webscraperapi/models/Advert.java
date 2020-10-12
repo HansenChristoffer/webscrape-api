@@ -1,10 +1,13 @@
 package se.sogeti.webscraperapi.models;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 @Document(collection = "scrapes_adverts")
 public class Advert implements Serializable {
@@ -47,6 +50,9 @@ public class Advert implements Serializable {
     private String objectNumber;
 
     private String href;
+
+    @DateTimeFormat(iso=ISO.DATE_TIME)
+    private Instant addedDate;
 
     // @Lob
     // @Column(name = "ADVERT_IMAGE", columnDefinition = "BLOB")
@@ -123,6 +129,14 @@ public class Advert implements Serializable {
 
     public void setHref(String href) {
         this.href = href;
+    }
+
+    public Instant getAddedDate() {
+        return addedDate;
+    }
+
+    public void setAddedDate(Instant addedDate) {
+        this.addedDate = addedDate;
     }
 
     // public byte[] getImage() {
