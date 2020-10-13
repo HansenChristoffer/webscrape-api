@@ -9,7 +9,6 @@ import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import lombok.extern.slf4j.Slf4j;
 import se.sogeti.webscraperapi.assemblers.LinkModelAssembler;
 import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
 import se.sogeti.webscraperapi.exceptions.EmptyLinkListException;
@@ -17,7 +16,6 @@ import se.sogeti.webscraperapi.models.Link;
 import se.sogeti.webscraperapi.repositories.LinkRepository;
 
 @Service
-@Slf4j
 public class LinkService {
 
     private LinkRepository repository;

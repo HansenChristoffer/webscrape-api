@@ -33,7 +33,13 @@ public class LoadDatabase {
       
       // Links
       Link mockLink = new Link("https://www.mocklink.io/coolstuff");
+      Link mockLink1 = new Link("https://www.mocklink.io/pewpew");
+      Link mockLink2 = new Link("https://www.mocklink.io/cowcow");
+      Link mockLink3 = new Link("https://www.mocklink.io/bajs");
       log.info("{}{}", PRELOAD, linkService.createLink(mockLink));
+      log.info("{}{}", PRELOAD, linkService.createLink(mockLink1));
+      log.info("{}{}", PRELOAD, linkService.createLink(mockLink2));
+      log.info("{}{}", PRELOAD, linkService.createLink(mockLink3));
       
       // Sellers
       Seller mockSeller = new Seller("mockSeller", "location", "registered", "sellerHref");

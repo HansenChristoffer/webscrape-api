@@ -18,6 +18,7 @@ public class LinkModelAssembler implements RepresentationModelAssembler<Link, En
 
     return EntityModel.of(link, 
         linkTo(methodOn(LinkController.class).findOpen()).withSelfRel(),
-        linkTo(methodOn(LinkController.class).findByHref(link.getHref())).withSelfRel());
+        linkTo(methodOn(LinkController.class).findByHref(link.getHref())).withSelfRel(),
+        linkTo(methodOn(LinkController.class).deleteById(link.getId())).withSelfRel());
   }
 }
