@@ -1,6 +1,8 @@
 package se.sogeti.webscraperapi.controllers;
 
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +33,8 @@ public class LinkController {
     }
 
     @DeleteMapping("/links/id")
-    public void deleteById(@RequestParam String value) {
-        service.deleteById(value);
+    public ResponseEntity<Link> deleteById(@RequestParam String value) {
+        return service.deleteById(value) ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
+                : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

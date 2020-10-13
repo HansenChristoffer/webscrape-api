@@ -69,8 +69,17 @@ public class LinkService {
                 : null;
     }
 
-    public void deleteById(String id) {
-        repository.deleteById(id);
+    public boolean deleteById(String id) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+            if (!repository.existsById(id)) {
+                return true;
+            }
+        } else {
+            throw new AbstractNotFoundException(id);
+        }
+
+        return false;
     }
 
     public void deleteAll() {
