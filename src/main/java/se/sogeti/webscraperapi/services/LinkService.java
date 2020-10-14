@@ -49,6 +49,7 @@ public class LinkService {
     }
 
     public ResponseEntity<EntityModel<Link>> createLink(Link newLink) {
+        newLink.setIsOpen(true);
         EntityModel<Link> entityModel = assembler.toModel(repository.save(newLink));
 
         return ResponseEntity //
@@ -58,7 +59,7 @@ public class LinkService {
 
     public ResponseEntity<EntityModel<Link>> closeLink(String href) {
         Link link = repository.findByHref(href).orElseThrow(() -> new AbstractNotFoundException(href));
-        link.setOpen(false);
+        link.setIsOpen(false);
 
         Link updatedLink = repository.save(link);
 

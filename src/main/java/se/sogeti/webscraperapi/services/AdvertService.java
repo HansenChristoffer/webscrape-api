@@ -17,6 +17,7 @@ import se.sogeti.webscraperapi.assemblers.AdvertModelAssembler;
 import se.sogeti.webscraperapi.controllers.AdvertController;
 import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
 import se.sogeti.webscraperapi.models.Advert;
+import se.sogeti.webscraperapi.models.Category;
 import se.sogeti.webscraperapi.repositories.AdvertRepository;
 import se.sogeti.webscraperapi.repositories.CategoryRepository;
 import se.sogeti.webscraperapi.repositories.SellerRepository;
@@ -27,13 +28,18 @@ public class AdvertService {
     private AdvertRepository repository;
     private CategoryRepository categoryRepository;
     private SellerRepository sellerRepository;
+    private CategoryService categoryService;
+    private SellerService sellerService;
     private AdvertModelAssembler assembler;
 
     public AdvertService(AdvertRepository repository, CategoryRepository categoryRepository,
-            SellerRepository sellerRepository, AdvertModelAssembler assembler) {
+            SellerRepository sellerRepository, CategoryService categoryService, SellerService sellerService,
+            AdvertModelAssembler assembler) {
         this.repository = repository;
         this.categoryRepository = categoryRepository;
         this.sellerRepository = sellerRepository;
+        this.categoryService = categoryService;
+        this.sellerService = sellerService;
         this.assembler = assembler;
     }
 
@@ -73,13 +79,14 @@ public class AdvertService {
     }
 
     public ResponseEntity<EntityModel<Advert>> createAdvert(Advert newAdvert) {
-        categoryRepository.findByName(newAdvert.getCategoryName())
-                .orElseThrow(() -> new AbstractNotFoundException(newAdvert.getCategoryName()));
-                
+        if (!categoryRepository.findByName(newAdvert.getCategoryName()).isPresent()) {
+            categoryService.createCategory(new Category(newAdvert.getCategoryName(), "N/A"));
+        }
+
         sellerRepository.findByName(newAdvert.getSellerName())
                 .orElseThrow(() -> new AbstractNotFoundException(newAdvert.getSellerName()));
 
-        // 
+        //
         newAdvert.setAddedDate(Instant.now());
 
         EntityModel<Advert> entityModel = assembler.toModel(repository.save(newAdvert));
