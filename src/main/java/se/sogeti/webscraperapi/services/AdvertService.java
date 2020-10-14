@@ -29,17 +29,14 @@ public class AdvertService {
     private CategoryRepository categoryRepository;
     private SellerRepository sellerRepository;
     private CategoryService categoryService;
-    private SellerService sellerService;
     private AdvertModelAssembler assembler;
 
     public AdvertService(AdvertRepository repository, CategoryRepository categoryRepository,
-            SellerRepository sellerRepository, CategoryService categoryService, SellerService sellerService,
-            AdvertModelAssembler assembler) {
+            SellerRepository sellerRepository, CategoryService categoryService, AdvertModelAssembler assembler) {
         this.repository = repository;
         this.categoryRepository = categoryRepository;
         this.sellerRepository = sellerRepository;
         this.categoryService = categoryService;
-        this.sellerService = sellerService;
         this.assembler = assembler;
     }
 
