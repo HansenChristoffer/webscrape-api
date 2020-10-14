@@ -3,6 +3,9 @@ package se.sogeti.webscraperapi.models;
 import java.io.Serializable;
 import java.time.Instant;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -39,7 +42,7 @@ public class Seller implements Serializable {
 
     private String href;
 
-    @DateTimeFormat(iso=ISO.DATE_TIME)
+    @DateTimeFormat(iso = ISO.DATE_TIME)
     private Instant addedDate;
 
     public String getId() {
@@ -90,4 +93,28 @@ public class Seller implements Serializable {
         this.addedDate = addedDate;
     }
 
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).append("id", id).append("name", name).append("location", location)
+                .append("registered", registered).append("href", href).toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(name).append(registered).append(location).append(id).append(href)
+                .toHashCode();
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other == this) {
+            return true;
+        }
+        if ((other instanceof Seller) == false) {
+            return false;
+        }
+        Seller rhs = ((Seller) other);
+        return new EqualsBuilder().append(name, rhs.name).append(registered, rhs.registered)
+                .append(location, rhs.location).append(id, rhs.id).append(href, rhs.href).isEquals();
+    }
 }
