@@ -1,5 +1,8 @@
 package se.sogeti.webscraperapi.controllers;
 
+import java.util.List;
+
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +40,11 @@ public class LinkController {
     @PostMapping("/links")
     public ResponseEntity<EntityModel<Link>> createLink(@RequestBody Link link) {
         return service.createLink(link);
+    }
+
+    @PostMapping("/links/all")
+    public ResponseEntity<CollectionModel<EntityModel<Link>>> createAllLinks(@RequestBody List<Link> links) {
+        return service.createAllLinks(links);
     }
 
     @DeleteMapping("/links/id")
