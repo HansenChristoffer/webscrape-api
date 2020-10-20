@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.ResponseEntity;
@@ -46,6 +47,13 @@ public class LinkService {
                 .orElseThrow(() -> new AbstractNotFoundException(href));
 
         return assembler.toModel(link);
+    }
+
+    public ResponseEntity<CollectionModel<EntityModel<Link>>> createAllLinks(List<Link> newLinks) {
+        newLinks.forEach(l -> l.setIsOpen(true));
+
+                return ResponseEntity.ok(
+                    assembler.toCollectionModel(repository.saveAll(newLinks)));
     }
 
     public ResponseEntity<EntityModel<Link>> createLink(Link newLink) {
