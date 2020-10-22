@@ -1,7 +1,7 @@
 package se.sogeti.webscraperapi.controllers;
 
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
+import java.util.Collection;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,32 +25,32 @@ public class SellerController {
     }
 
     @GetMapping(value = "/sellers/id")
-    public EntityModel<Seller> findById(@RequestParam String value) {
-        return service.findById(value);
+    public Seller findByObjectId(@RequestParam String value) {
+        return service.findByObjectId(value);
     }
 
     @GetMapping(value = "/sellers")
-    public CollectionModel<EntityModel<Seller>> findAll() {
+    public Collection<Seller> findAll() {
         return service.findAll();
     }
 
     @GetMapping(value = "/sellers/name")
-    public EntityModel<Seller> findByName(@RequestParam String value) {
+    public Seller findByName(@RequestParam String value) {
         return service.findByName(value);
     }
 
     @GetMapping(value = "/sellers/href")
-    public EntityModel<Seller> findByHref(@RequestParam String value) {
+    public Seller findByHref(@RequestParam String value) {
         return service.findByHref(value);
     }
 
     @PostMapping(value = "/sellers")
-    public ResponseEntity<EntityModel<Seller>> createSeller(@RequestBody Seller newSeller) {
+    public ResponseEntity<Seller> createSeller(@RequestBody Seller newSeller) {
         return service.createSeller(newSeller);
     }
 
     @PutMapping(value = "/sellers/id")
-    public ResponseEntity<EntityModel<Seller>> replaceSeller(@RequestBody Seller newSeller, @RequestParam String value) {
+    public ResponseEntity<Seller> replaceSeller(@RequestBody Seller newSeller, @RequestParam String value) {
         return service.replaceSeller(newSeller, value);
     }
 }

@@ -1,23 +1,15 @@
 package se.sogeti.webscraperapi.services;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import java.time.Instant;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collection;
 
+import org.bson.types.ObjectId;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
-import se.sogeti.webscraperapi.assemblers.SellerModelAssembler;
-import se.sogeti.webscraperapi.controllers.SellerController;
 import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
 import se.sogeti.webscraperapi.models.Seller;
 import se.sogeti.webscraperapi.repositories.SellerRepository;
@@ -26,82 +18,60 @@ import se.sogeti.webscraperapi.repositories.SellerRepository;
 @Slf4j
 public class SellerService {
 
-    private final SellerRepository repository;
-    private final SellerModelAssembler assembler;
+    private final SellerRepository sellerRepository;
 
-    SellerService(SellerRepository repository, SellerModelAssembler assembler) {
-        this.repository = repository;
-        this.assembler = assembler;
+    SellerService(SellerRepository sellerRepository) {
+        this.sellerRepository = sellerRepository;
     }
 
-    public EntityModel<Seller> findById(String id) {
-        Seller seller = repository.findById(id) //
+    public Seller findByObjectId(String id) {
+        return sellerRepository.findByObjectId(new ObjectId(id))
                 .orElseThrow(() -> new AbstractNotFoundException(id));
-
-        return assembler.toModel(seller);
     }
 
-    public CollectionModel<EntityModel<Seller>> findAll() {
-        List<EntityModel<Seller>> sellers = repository.findAll().stream() //
-                .map(assembler::toModel) //
-                .collect(Collectors.toList());
-
-        return CollectionModel.of(sellers, linkTo(methodOn(SellerController.class).findAll()).withSelfRel());
+    public Collection<Seller> findAll() {
+        return sellerRepository.findAll();
     }
 
-    public EntityModel<Seller> findByName(String name) {
-        Seller seller = repository.findByName(name) //
+    public Seller findByName(String name) {
+        return sellerRepository.findByName(name) //
                 .orElseThrow(() -> new AbstractNotFoundException(name));
-
-        return assembler.toModel(seller);
     }
 
-    public EntityModel<Seller> findByHref(String href) {
-        Seller seller = repository.findByHref(href) //
+    public Seller findByHref(String href) {
+        return sellerRepository.findByHref(href) //
                 .orElseThrow(() -> new AbstractNotFoundException(href));
-
-        return assembler.toModel(seller);
     }
 
-    public ResponseEntity<EntityModel<Seller>> createSeller(Seller newSeller) {
+    public ResponseEntity<Seller> createSeller(Seller newSeller) {
         newSeller.setAddedDate(Instant.now());
-        EntityModel<Seller> entityModel = assembler.toModel(newSeller);
 
         try {
-        entityModel = assembler.toModel(repository.save(newSeller));
+            return ResponseEntity.ok(sellerRepository.save(newSeller));
         } catch (DuplicateKeyException e) {
             log.info("Duplicate key at Seller!");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(entityModel);
         }
 
-        return ResponseEntity //
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-                .body(entityModel);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new Seller());
     }
 
-    public ResponseEntity<EntityModel<Seller>> replaceSeller(Seller newSeller, String id) {
-    
-        Seller updatedSeller = repository.findById(id) //
-          .map(seller -> {
-            seller.setName(newSeller.getName());
-            seller.setLocation(newSeller.getLocation());
-            seller.setRegistered(newSeller.getRegistered());
-            seller.setHref(newSeller.getHref());
-            return repository.save(seller);
-          }) //
-          .orElseGet(() -> {
-            newSeller.setId(id);
-            return repository.save(newSeller);
-          });
-    
-      EntityModel<Seller> entityModel = assembler.toModel(updatedSeller);
-    
-      return ResponseEntity //
-          .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-          .body(entityModel);
+    public ResponseEntity<Seller> replaceSeller(Seller newSeller, String id) {
+
+        return sellerRepository.findByObjectId(new ObjectId(id)) //
+                .map(seller -> {
+                    seller.setName(newSeller.getName());
+                    seller.setLocation(newSeller.getLocation());
+                    seller.setRegistered(newSeller.getRegistered());
+                    seller.setHref(newSeller.getHref());
+                    return ResponseEntity.ok(sellerRepository.save(seller));
+
+                }).orElseGet(() -> {
+                    newSeller.setId(id);
+                    return ResponseEntity.ok(sellerRepository.save(newSeller));
+                });
     }
-    
+
     public void deleteAll() {
-        repository.deleteAll();
+        sellerRepository.deleteAll();
     }
 }

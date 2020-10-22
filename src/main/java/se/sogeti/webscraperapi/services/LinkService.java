@@ -1,19 +1,16 @@
 package se.sogeti.webscraperapi.services;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
-import se.sogeti.webscraperapi.assemblers.LinkModelAssembler;
 import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
 import se.sogeti.webscraperapi.exceptions.EmptyLinkListException;
 import se.sogeti.webscraperapi.models.Link;
@@ -23,85 +20,77 @@ import se.sogeti.webscraperapi.repositories.LinkRepository;
 @Slf4j
 public class LinkService {
 
-    private LinkRepository repository;
-    private LinkModelAssembler assembler;
+    private LinkRepository linkRepository;
     private static final Random RAND = new Random();
 
-    public LinkService(LinkRepository repository, LinkModelAssembler assembler) {
-        this.repository = repository;
-        this.assembler = assembler;
+    public LinkService(LinkRepository repository) {
+        this.linkRepository = repository;
     }
 
-    public EntityModel<Link> findOpen() {
-        List<EntityModel<Link>> links = repository.findOpen().stream().map(assembler::toModel)
-                .collect(Collectors.toList());
+    public Link findOpen() {
+        List<Link> links = new ArrayList<>(findAll());
 
         if (links.isEmpty()) {
             throw new EmptyLinkListException();
         }
 
-        EntityModel<Link> link = assembler.toModel(links.get(RAND.nextInt(links.size())).getContent());
-        closeLink(link.getContent().getHref());
+        Link link = links.get(RAND.nextInt(links.size()));
+        closeLink(link.getHref());
 
         return link;
     }
 
-    public EntityModel<Link> findByHref(String href) {
-        Link link = repository.findByHref(href) //
-                .orElseThrow(() -> new AbstractNotFoundException(href));
-
-        return assembler.toModel(link);
+    public Collection<Link> findAll() {
+        return linkRepository.findAll();
     }
 
-    public ResponseEntity<CollectionModel<EntityModel<Link>>> createAllLinks(List<Link> newLinks) {
-        newLinks.forEach(l -> l.setIsOpen(true));
-
-        return ResponseEntity.ok(assembler.toCollectionModel(repository.saveAll(newLinks)));
+    public Link findByHref(String href) {
+        return linkRepository.findByHref(href).orElseThrow(() -> new AbstractNotFoundException(href));
     }
 
-    public ResponseEntity<EntityModel<Link>> createLink(Link newLink) {
+    public ResponseEntity<Collection<Link>> createAllLinks(List<Link> newLinks) {
+        newLinks.forEach(link -> link.setIsOpen(true));
+
+        return ResponseEntity.ok(linkRepository.saveAll(newLinks));
+    }
+
+    public ResponseEntity<Link> createLink(Link newLink) {
         newLink.setIsOpen(true);
-        EntityModel<Link> entityModel = assembler.toModel(newLink);
 
         try {
-            entityModel = assembler.toModel(repository.save(newLink));
+            return ResponseEntity.ok(linkRepository.save(newLink));
         } catch (DuplicateKeyException e) {
             log.info("Duplicate key at Link!");
-            return ResponseEntity.status(HttpStatus.CONFLICT).body(entityModel);
         }
 
-        return ResponseEntity //
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-                .body(entityModel);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new Link());
     }
 
-    public ResponseEntity<EntityModel<Link>> closeLink(String href) {
-        Link link = repository.findByHref(href).orElseThrow(() -> new AbstractNotFoundException(href));
+    public ResponseEntity<Link> closeLink(String href) {
+        Link link = linkRepository.findByHref(href).orElseThrow(() -> new AbstractNotFoundException(href));
         link.setIsOpen(false);
 
-        Link updatedLink = repository.save(link);
-
-        EntityModel<Link> entityModel = assembler.toModel(updatedLink);
+        Link updatedLink = linkRepository.save(link);
 
         return !updatedLink.isOpen()
-                ? ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(entityModel)
-                : null;
+                ? ResponseEntity.ok(link)
+                : ResponseEntity.status(HttpStatus.CONFLICT).body(new Link());
     }
 
-    public boolean deleteById(String id) {
-        if (repository.existsById(id)) {
-            repository.deleteById(id);
-            if (!repository.existsById(id)) {
-                return true;
+    public ResponseEntity<String> deleteById(String id) {
+        if (linkRepository.existsById(id)) {
+            linkRepository.deleteById(id);
+            if (!linkRepository.existsById(id)) {
+                return ResponseEntity.ok("Successfully deleted the Link!");
             }
         } else {
             throw new AbstractNotFoundException(id);
         }
 
-        return false;
+        return ResponseEntity.badRequest().body("Something iffy from your side!");
     }
 
     public void deleteAll() {
-        repository.deleteAll();
+        linkRepository.deleteAll();
     }
 }
