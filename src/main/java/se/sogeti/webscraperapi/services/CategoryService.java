@@ -7,12 +7,15 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
 import se.sogeti.webscraperapi.assemblers.CategoryModelAssembler;
 import se.sogeti.webscraperapi.controllers.CategoryController;
 import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
@@ -20,6 +23,7 @@ import se.sogeti.webscraperapi.models.Category;
 import se.sogeti.webscraperapi.repositories.CategoryRepository;
 
 @Service
+@Slf4j
 public class CategoryService {
 
     private final CategoryRepository repository;
@@ -62,7 +66,14 @@ public class CategoryService {
     public ResponseEntity<EntityModel<Category>> createCategory(Category newCategory) {
         newCategory.setAddedDate(Instant.now());
 
-        EntityModel<Category> entityModel = assembler.toModel(repository.save(newCategory));
+        EntityModel<Category> entityModel = assembler.toModel(newCategory);
+
+        try {
+        entityModel = assembler.toModel(repository.save(newCategory));
+    } catch (DuplicateKeyException e) {
+        log.info("Duplicate key at Category!");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(entityModel);
+    }
 
         return ResponseEntity //
                 .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //

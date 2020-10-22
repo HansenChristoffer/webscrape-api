@@ -6,9 +6,9 @@ import java.time.Instant;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
@@ -30,7 +30,7 @@ public class Seller implements Serializable {
      */
     private static final long serialVersionUID = -6703572985770238904L;
 
-    @Id
+    @MongoId
     private String id;
 
     @Indexed(unique = true)

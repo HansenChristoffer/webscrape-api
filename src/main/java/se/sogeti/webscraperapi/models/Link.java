@@ -5,9 +5,9 @@ import java.io.Serializable;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 @Document(collection = "scrapes_links")
 public class Link implements Serializable {
@@ -25,7 +25,7 @@ public class Link implements Serializable {
         this.isOpen = true;
     }
 
-    @Id
+    @MongoId
     private String id;
 
     @Indexed(unique = true)
