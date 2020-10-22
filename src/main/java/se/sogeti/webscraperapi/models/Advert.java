@@ -6,9 +6,9 @@ import java.time.Instant;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
@@ -19,7 +19,8 @@ public class Advert implements Serializable {
     }
 
     public Advert(String name, String categoryName, String sellerName, String description, double price,
-            String published, String objectNumber, String href) {
+            String published, String objectNumber, String href, String condition, String brand, String size,
+            String color, byte[] image) {
         this.name = name;
         this.categoryName = categoryName;
         this.sellerName = sellerName;
@@ -28,14 +29,16 @@ public class Advert implements Serializable {
         this.published = published;
         this.objectNumber = objectNumber;
         this.href = href;
+        this.condition = condition;
+        this.brand = brand;
+        this.size = size;
+        this.color = color;
+        this.image = image;
     }
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1331200230166367593L;
 
-    @Id
+    @MongoId
     private String id;
 
     private String name;
@@ -46,7 +49,7 @@ public class Advert implements Serializable {
 
     private String description;
 
-    private double price;
+    private double price = 0.0;
 
     private String published;
 
@@ -55,13 +58,18 @@ public class Advert implements Serializable {
 
     private String href;
 
+    private String condition;
+
+    private String brand;
+
+    private String size;
+
+    private String color;
+
+    private byte[] image;
+
     @DateTimeFormat(iso = ISO.DATE_TIME)
     private Instant addedDate;
-
-    // @Lob
-    // @Column(name = "ADVERT_IMAGE", columnDefinition = "BLOB")
-    // private byte[] image; // TODO Research and find solution on how or if you
-    // should store image in database
 
     public String getId() {
         return id;
@@ -135,6 +143,38 @@ public class Advert implements Serializable {
         this.href = href;
     }
 
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
+        this.condition = condition;
+    }
+
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
     public Instant getAddedDate() {
         return addedDate;
     }
@@ -143,25 +183,28 @@ public class Advert implements Serializable {
         this.addedDate = addedDate;
     }
 
-    // public byte[] getImage() {
-    // return image;
-    // }
+    public byte[] getImage() {
+        return image;
+    }
 
-    // public void setImage() {
-    // this.image = image;
-    // }
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("id", id).append("name", name).append("categoryName", categoryName)
-                .append("sellerName", sellerName).append("description", description).append("price", price)
-                .append("published", published).append("objectNumber", objectNumber).append("href", href).toString();
+        return new ToStringBuilder(this).append("id", id).append("name", name).append("description", description)
+                .append("Condition", condition).append("brand", brand).append("size", size).append("color", color)
+                .append("price", price).append("published", published).append("objectNumber", objectNumber)
+                .append("href", href).append("categoryName", categoryName).append("sellerName", sellerName)
+                .append("image", image).toString();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(price).append(name).append(sellerName).append(objectNumber)
-                .append(description).append(id).append(published).append(href).append(categoryName).toHashCode();
+        return new HashCodeBuilder().append(sellerName).append(price).append(name).append(objectNumber)
+                .append(description).append(condition).append(color).append(size).append(brand).append(id)
+                .append(published).append(href).append(categoryName).append(sellerName).append(image).toHashCode();
     }
 
     @Override
@@ -176,7 +219,8 @@ public class Advert implements Serializable {
         return new EqualsBuilder().append(price, rhs.price).append(name, rhs.name).append(sellerName, rhs.sellerName)
                 .append(objectNumber, rhs.objectNumber).append(description, rhs.description).append(id, rhs.id)
                 .append(published, rhs.published).append(href, rhs.href).append(categoryName, rhs.categoryName)
-                .isEquals();
+                .append(condition, rhs.condition).append(brand, rhs.brand).append(size, rhs.size)
+                .append(color, rhs.color).append(image, rhs.image).isEquals();
     }
 
 }

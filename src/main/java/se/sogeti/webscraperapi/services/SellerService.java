@@ -7,12 +7,15 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
 import se.sogeti.webscraperapi.assemblers.SellerModelAssembler;
 import se.sogeti.webscraperapi.controllers.SellerController;
 import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
@@ -20,6 +23,7 @@ import se.sogeti.webscraperapi.models.Seller;
 import se.sogeti.webscraperapi.repositories.SellerRepository;
 
 @Service
+@Slf4j
 public class SellerService {
 
     private final SellerRepository repository;
@@ -61,8 +65,14 @@ public class SellerService {
 
     public ResponseEntity<EntityModel<Seller>> createSeller(Seller newSeller) {
         newSeller.setAddedDate(Instant.now());
+        EntityModel<Seller> entityModel = assembler.toModel(newSeller);
 
-        EntityModel<Seller> entityModel = assembler.toModel(repository.save(newSeller));
+        try {
+        entityModel = assembler.toModel(repository.save(newSeller));
+        } catch (DuplicateKeyException e) {
+            log.info("Duplicate key at Seller!");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(entityModel);
+        }
 
         return ResponseEntity //
                 .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //

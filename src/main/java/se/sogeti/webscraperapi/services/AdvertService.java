@@ -7,12 +7,15 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
 import se.sogeti.webscraperapi.assemblers.AdvertModelAssembler;
 import se.sogeti.webscraperapi.controllers.AdvertController;
 import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
@@ -20,22 +23,20 @@ import se.sogeti.webscraperapi.models.Advert;
 import se.sogeti.webscraperapi.models.Category;
 import se.sogeti.webscraperapi.repositories.AdvertRepository;
 import se.sogeti.webscraperapi.repositories.CategoryRepository;
-import se.sogeti.webscraperapi.repositories.SellerRepository;
 
 @Service
+@Slf4j
 public class AdvertService {
 
     private AdvertRepository repository;
     private CategoryRepository categoryRepository;
-    private SellerRepository sellerRepository;
     private CategoryService categoryService;
     private AdvertModelAssembler assembler;
 
     public AdvertService(AdvertRepository repository, CategoryRepository categoryRepository,
-            SellerRepository sellerRepository, CategoryService categoryService, AdvertModelAssembler assembler) {
+            CategoryService categoryService, AdvertModelAssembler assembler) {
         this.repository = repository;
         this.categoryRepository = categoryRepository;
-        this.sellerRepository = sellerRepository;
         this.categoryService = categoryService;
         this.assembler = assembler;
     }
@@ -80,13 +81,16 @@ public class AdvertService {
             categoryService.createCategory(new Category(newAdvert.getCategoryName(), "N/A"));
         }
 
-        sellerRepository.findByName(newAdvert.getSellerName())
-                .orElseThrow(() -> new AbstractNotFoundException(newAdvert.getSellerName()));
-
         //
         newAdvert.setAddedDate(Instant.now());
+        EntityModel<Advert> entityModel = assembler.toModel(newAdvert);
 
-        EntityModel<Advert> entityModel = assembler.toModel(repository.save(newAdvert));
+        try {
+            entityModel = assembler.toModel(repository.save(newAdvert));
+        } catch (DuplicateKeyException e) {
+            log.info("Duplicate key at Advert!");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(entityModel);
+        }
 
         return ResponseEntity //
                 .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
@@ -105,6 +109,7 @@ public class AdvertService {
                     advert.setPrice(newAdvert.getPrice());
                     advert.setPublished(newAdvert.getPublished());
                     advert.setSellerName(newAdvert.getSellerName());
+                    advert.setImage(newAdvert.getImage());
                     return repository.save(advert);
                 }) //
                 .orElseGet(() -> {
