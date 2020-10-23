@@ -59,26 +59,18 @@ public class LoadDatabase {
     log.info("{}{}", preloadLoggerMsg, linkService.createLink(mockLink3));
   }
 
-  private String mockSellers() {
+  private void mockAdverts() {
+    Category mockCategory = new Category("mockCategory", "categoryHref");
+    log.info("{}{}", preloadLoggerMsg, categoryService.createCategory(mockCategory));
+
     Seller mockSeller = new Seller("mockSeller", "location", "registered", "sellerHref");
     sellerService.createSeller(mockSeller);
     log.info("{}{}", preloadLoggerMsg, sellerService.createSeller(mockSeller));
 
-    return mockSeller.getName();
-  }
-
-  private String mockCategories() {
-    Category mockCategory = new Category("mockCategory", "categoryHref");
-    log.info("{}{}", preloadLoggerMsg, categoryService.createCategory(mockCategory));
-
-    return mockCategory.getName();
-  }
-
-  private void mockAdverts() {
-    Advert mockAdvertOne = new Advert("mockAdvertOne", mockCategories(), mockSellers(), "description",
+    Advert mockAdvertOne = new Advert("mockAdvertOne", mockCategory.getName(), mockSeller.getName(), "description",
         1000.0, "published", "98348748", "mockAdvertOne", "mockCondition", "mockBrand", "mockSize", "mockColor",
         new byte[0]);
-    Advert mockAdvertTwo = new Advert("mockAdvertTwo", mockCategories(), mockSellers(), "description",
+    Advert mockAdvertTwo = new Advert("mockAdvertTwo", mockCategory.getName(), mockSeller.getName(), "description",
         1000.0, "published", "834863423", "mockAdvertTwo", "mockCondition", "mockBrand", "mockSize", "mockColor",
         new byte[0]);
     log.info("{}{}", preloadLoggerMsg, advertService.createAdvert(mockAdvertOne));
