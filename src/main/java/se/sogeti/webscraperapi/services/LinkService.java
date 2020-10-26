@@ -28,7 +28,7 @@ public class LinkService {
     }
 
     public Link findOpen() {
-        List<Link> links = new ArrayList<>(findAll());
+        List<Link> links = new ArrayList<>(linkRepository.findOpen());
 
         if (links.isEmpty()) {
             throw new EmptyLinkListException();
