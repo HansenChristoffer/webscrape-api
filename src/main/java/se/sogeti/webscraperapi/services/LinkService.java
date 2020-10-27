@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
-import se.sogeti.webscraperapi.exceptions.EmptyLinkListException;
 import se.sogeti.webscraperapi.models.Link;
 import se.sogeti.webscraperapi.repositories.LinkRepository;
 
@@ -20,77 +19,77 @@ import se.sogeti.webscraperapi.repositories.LinkRepository;
 @Slf4j
 public class LinkService {
 
-    private LinkRepository linkRepository;
-    private static final Random RAND = new Random();
+	private LinkRepository linkRepository;
+	private static final Random RAND = new Random();
 
-    public LinkService(LinkRepository repository) {
-        this.linkRepository = repository;
-    }
+	public LinkService(LinkRepository repository) {
+		this.linkRepository = repository;
+	}
 
-    public Link findOpen() {
-        List<Link> links = new ArrayList<>(linkRepository.findOpen());
+	public ResponseEntity<Link> findOpen() {
+		List<Link> links = new ArrayList<>(linkRepository.findOpen());
 
-        if (links.isEmpty()) {
-            throw new EmptyLinkListException();
-        }
+		if (links.isEmpty()) {
+			
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Link());
+		}
 
-        Link link = links.get(RAND.nextInt(links.size()));
-        closeLink(link.getHref());
+		Link link = links.get(RAND.nextInt(links.size()));
+		closeLink(link.getHref());
 
-        return link;
-    }
+		return  ResponseEntity.ok(link);
+	}
 
-    public Collection<Link> findAll() {
-        return linkRepository.findAll();
-    }
+	public Collection<Link> findAll() {
+		return linkRepository.findAll();
+	}
 
-    public Link findByHref(String href) {
-        return linkRepository.findByHref(href).orElseThrow(() -> new AbstractNotFoundException(href));
-    }
+	public Link findByHref(String href) {
+		return linkRepository.findByHref(href).orElseThrow(() -> new AbstractNotFoundException(href));
+	}
 
-    public ResponseEntity<Collection<Link>> createAllLinks(List<Link> newLinks) {
-        newLinks.forEach(link -> link.setIsOpen(true));
+	public ResponseEntity<Collection<Link>> createAllLinks(List<Link> newLinks) {
+		newLinks.forEach(link -> link.setIsOpen(true));
 
-        return ResponseEntity.ok(linkRepository.saveAll(newLinks));
-    }
+		return ResponseEntity.ok(linkRepository.saveAll(newLinks));
+	}
 
-    public ResponseEntity<Link> createLink(Link newLink) {
-        newLink.setIsOpen(true);
+	public ResponseEntity<Link> createLink(Link newLink) {
+		newLink.setIsOpen(true);
 
-        try {
-            return ResponseEntity.ok(linkRepository.save(newLink));
-        } catch (DuplicateKeyException e) {
-            log.info("Duplicate key at Link!");
-        }
+		try {
+			return ResponseEntity.ok(linkRepository.save(newLink));
+		} catch (DuplicateKeyException e) {
+			log.info("Duplicate key at Link!");
+		}
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new Link());
-    }
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(new Link());
+	}
 
-    public ResponseEntity<Link> closeLink(String href) {
-        Link link = linkRepository.findByHref(href).orElseThrow(() -> new AbstractNotFoundException(href));
-        link.setIsOpen(false);
+	public ResponseEntity<Link> closeLink(String href) {
+		Link link = linkRepository.findByHref(href).orElseThrow(() -> new AbstractNotFoundException(href));
+		link.setIsOpen(false);
 
-        Link updatedLink = linkRepository.save(link);
+		Link updatedLink = linkRepository.save(link);
 
-        return !updatedLink.isOpen()
-                ? ResponseEntity.ok(link)
-                : ResponseEntity.status(HttpStatus.CONFLICT).body(new Link());
-    }
+		return !updatedLink.isOpen() ? ResponseEntity.ok(link)
+				: ResponseEntity.status(HttpStatus.CONFLICT).body(new Link());
+	}
 
-    public ResponseEntity<String> deleteById(String id) {
-        if (linkRepository.existsById(id)) {
-            linkRepository.deleteById(id);
-            if (!linkRepository.existsById(id)) {
-                return ResponseEntity.ok("Successfully deleted the Link!");
-            }
-        } else {
-            throw new AbstractNotFoundException(id);
-        }
+	public ResponseEntity<String> deleteById(String id) {
+		if (linkRepository.existsById(id)) {
+			linkRepository.deleteById(id);
+			if (!linkRepository.existsById(id)) {
+				return ResponseEntity.ok("Successfully deleted the Link!");
+			}
+		} else {
+			throw new AbstractNotFoundException(id);
+		}
 
-        return ResponseEntity.badRequest().body("Something iffy from your side!");
-    }
+		return ResponseEntity.badRequest().body("Something iffy from your side!");
+	}
 
-    public void deleteAll() {
-        linkRepository.deleteAll();
-    }
+	public void deleteAll() {
+		linkRepository.deleteAll();
+	}
 }

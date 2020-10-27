@@ -26,7 +26,7 @@ public class LinkController {
     }
 
     @GetMapping("/links/open")
-    public Link findOpen() {
+    public ResponseEntity<Link> findOpen() {
         return service.findOpen();
     }
 
