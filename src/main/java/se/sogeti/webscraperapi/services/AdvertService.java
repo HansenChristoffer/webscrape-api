@@ -48,12 +48,13 @@ public class AdvertService {
     }
 
     public Advert findByObjectNumber(String objectNumber) {
-        return advertRepository.findByObjectNumber(objectNumber).orElseThrow(() -> new AbstractNotFoundException(objectNumber));
+        return advertRepository.findByObjectNumber(objectNumber)
+                .orElseThrow(() -> new AbstractNotFoundException(objectNumber));
     }
 
     public ResponseEntity<Advert> createAdvert(Advert newAdvert) {
         if (!categoryRepository.findByName(newAdvert.getCategoryName()).isPresent()) {
-            categoryService.createCategory(new Category(newAdvert.getCategoryName(), "N/A"));
+            categoryService.createCategory(new Category(newAdvert.getCategoryName(), "N/A", true));
         }
 
         newAdvert.setAddedDate(Instant.now());

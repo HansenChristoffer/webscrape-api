@@ -25,8 +25,7 @@ public class SellerService {
     }
 
     public Seller findByObjectId(String id) {
-        return sellerRepository.findByObjectId(new ObjectId(id))
-                .orElseThrow(() -> new AbstractNotFoundException(id));
+        return sellerRepository.findByObjectId(new ObjectId(id)).orElseThrow(() -> new AbstractNotFoundException(id));
     }
 
     public Collection<Seller> findAll() {
@@ -61,7 +60,6 @@ public class SellerService {
                 .map(seller -> {
                     seller.setName(newSeller.getName());
                     seller.setLocation(newSeller.getLocation());
-                    seller.setRegistered(newSeller.getRegistered());
                     seller.setHref(newSeller.getHref());
                     return ResponseEntity.ok(sellerRepository.save(seller));
 

@@ -19,9 +19,10 @@ public class Category implements Serializable {
     public Category() {
     }
 
-    public Category(String name, String href) {
+    public Category(String name, String href, boolean isOpen) {
         this.name = name;
         this.href = href;
+        this.isOpen = isOpen;
     }
 
     /**
@@ -32,10 +33,12 @@ public class Category implements Serializable {
     @MongoId(value = FieldType.OBJECT_ID)
     private String id;
 
-    @Indexed(unique = true)
     private String name;
 
+    @Indexed(unique = true)
     private String href;
+
+    private boolean isOpen = true;
 
     @DateTimeFormat(iso = ISO.DATE_TIME)
     private Instant addedDate;
@@ -64,6 +67,14 @@ public class Category implements Serializable {
         this.href = href;
     }
 
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(boolean isOpen) {
+        this.isOpen = isOpen;
+    }
+
     public Instant getAddedDate() {
         return addedDate;
     }
@@ -74,12 +85,13 @@ public class Category implements Serializable {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("id", id).append("name", name).append("href", href).toString();
+        return new ToStringBuilder(this).append("id", id).append("name", name).append("href", href)
+                .append("isOpen", isOpen).toString();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(name).append(id).append(href).toHashCode();
+        return new HashCodeBuilder().append(name).append(id).append(href).append(isOpen).toHashCode();
     }
 
     @Override
@@ -91,6 +103,7 @@ public class Category implements Serializable {
             return false;
         }
         Category rhs = ((Category) other);
-        return new EqualsBuilder().append(name, rhs.name).append(id, rhs.id).append(href, rhs.href).isEquals();
+        return new EqualsBuilder().append(name, rhs.name).append(id, rhs.id).append(href, rhs.href)
+                .append(isOpen, rhs.isOpen).isEquals();
     }
 }

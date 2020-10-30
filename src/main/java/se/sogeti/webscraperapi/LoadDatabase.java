@@ -28,23 +28,23 @@ public class LoadDatabase {
   CommandLineRunner initDatabase(CategoryService categoryService, SellerService sellerService,
       AdvertService advertService, LinkService linkService) {
 
-        this.categoryService = categoryService;
-        this.sellerService = sellerService;
-        this.advertService = advertService;
-        this.linkService = linkService;
+    this.categoryService = categoryService;
+    this.sellerService = sellerService;
+    this.advertService = advertService;
+    this.linkService = linkService;
 
     return args -> {
       // Clear database
       linkService.deleteAll();
       sellerService.deleteAll();
-      categoryService.deleteAll();
+      // categoryService.deleteAll();
       advertService.deleteAll();
 
       // Links
-      //mockLinks();
+      // mockLinks();
 
       // Adverts
-      //mockAdverts();
+      // mockAdverts();
     };
   }
 
@@ -60,10 +60,10 @@ public class LoadDatabase {
   }
 
   private void mockAdverts() {
-    Category mockCategory = new Category("mockCategory", "categoryHref");
+    Category mockCategory = new Category("mockCategory", "categoryHref", true);
     log.info("{}{}", preloadLoggerMsg, categoryService.createCategory(mockCategory));
 
-    Seller mockSeller = new Seller("mockSeller", "location", "registered", "sellerHref");
+    Seller mockSeller = new Seller("mockSeller", "location", "sellerHref");
     sellerService.createSeller(mockSeller);
     log.info("{}{}", preloadLoggerMsg, sellerService.createSeller(mockSeller));
 
