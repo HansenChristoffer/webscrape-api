@@ -12,23 +12,16 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
 import se.sogeti.webscraperapi.models.Advert;
-import se.sogeti.webscraperapi.models.Category;
 import se.sogeti.webscraperapi.repositories.AdvertRepository;
-import se.sogeti.webscraperapi.repositories.CategoryRepository;
 
 @Service
 @Slf4j
 public class AdvertService {
 
     private AdvertRepository advertRepository;
-    private CategoryRepository categoryRepository;
-    private CategoryService categoryService;
 
-    public AdvertService(AdvertRepository advertRepository, CategoryRepository categoryRepository,
-            CategoryService categoryService) {
+    public AdvertService(AdvertRepository advertRepository) {
         this.advertRepository = advertRepository;
-        this.categoryRepository = categoryRepository;
-        this.categoryService = categoryService;
     }
 
     public Advert findByObjectId(String id) {
@@ -53,10 +46,6 @@ public class AdvertService {
     }
 
     public ResponseEntity<Advert> createAdvert(Advert newAdvert) {
-        if (!categoryRepository.findByName(newAdvert.getCategoryName()).isPresent()) {
-            categoryService.createCategory(new Category(newAdvert.getCategoryName(), "N/A", true));
-        }
-
         newAdvert.setAddedDate(Instant.now());
 
         try {
