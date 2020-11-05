@@ -3,6 +3,7 @@ package se.sogeti.webscraperapi.services;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -72,14 +73,43 @@ public class CategoryService {
     }
 
     public ResponseEntity<Collection<Category>> createAllCategories(Set<Category> newCategories) {
-        try {
-            return ResponseEntity.ok(categoryRepository.saveAll(newCategories));
-        } catch (DuplicateKeyException e) {
-            log.info("Duplicate key at Category!");
+        Set<Category> savedCategory = new HashSet<>();
+        Category newCategory;
+
+        for (Category c : newCategories) {
+            c.setOpen(true);
+            try {
+
+                newCategory = categoryRepository.save(c);
+
+                if (!newCategory.getHref().isBlank()) {
+                    savedCategory.add(newCategory);
+                }
+
+            } catch (Exception e) {
+                log.error("CreateAllCategory().Exception == {}", e.getMessage());
+            }
         }
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ArrayList<>());
+        if (savedCategory.size() == newCategories.size()) {
+            return ResponseEntity.ok(savedCategory);
+        } else if (!savedCategory.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body(savedCategory);
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(savedCategory);
+        }
     }
+
+    // public ResponseEntity<Collection<Category>> createAllCategories(Set<Category>
+    // newCategories) {
+    // try {
+    // return ResponseEntity.ok(categoryRepository.saveAll(newCategories));
+    // } catch (DuplicateKeyException e) {
+    // log.info("Duplicate key at Category!");
+    // }
+
+    // return ResponseEntity.status(HttpStatus.CONFLICT).body(new ArrayList<>());
+    // }
 
     public ResponseEntity<Category> replaceCategory(Category newCategory, String id) {
         return categoryRepository.findByObjectId(new ObjectId(id)).map(category -> {
