@@ -2,6 +2,7 @@ package se.sogeti.webscraperapi.services;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -50,16 +51,44 @@ public class LinkService {
 	}
 
 	public ResponseEntity<Collection<Link>> createAllLinks(Set<Link> newLinks) {
-		newLinks.forEach(l -> l.setIsOpen(true));
+		Set<Link> savedLinks = new HashSet<>();
+		Link newLink;
 
-		try {
-			return ResponseEntity.ok(linkRepository.saveAll(newLinks));
-		} catch (DuplicateKeyException e) {
-			log.info("Duplicate key at Link!");
+		for (Link l : newLinks) {
+			l.setIsOpen(true);
+			try {
+
+				newLink = linkRepository.save(l);
+
+				if (!newLink.getHref().isBlank()) {
+					savedLinks.add(newLink);
+				}
+
+			} catch (Exception e) {
+				log.error("testCreateAllLinks().Exception == {}", e.getMessage());
+			}
 		}
 
-		return ResponseEntity.status(HttpStatus.CONFLICT).body(new ArrayList<>());
+		if (savedLinks.size() == newLinks.size()) {
+			return ResponseEntity.ok(savedLinks);
+		} else if (!savedLinks.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body(savedLinks);
+		} else {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(savedLinks);
+		}
 	}
+
+	// public ResponseEntity<Collection<Link>> createAllLinks(Set<Link> newLinks) {
+	// newLinks.forEach(l -> l.setIsOpen(true));
+
+	// try {
+	// return ResponseEntity.ok(linkRepository.saveAll(newLinks));
+	// } catch (DuplicateKeyException e) {
+	// log.info("Duplicate key at Link!");
+	// }
+
+	// return ResponseEntity.status(HttpStatus.CONFLICT).body(new ArrayList<>());
+	// }
 
 	public ResponseEntity<Link> createLink(Link newLink) {
 		newLink.setIsOpen(true);
