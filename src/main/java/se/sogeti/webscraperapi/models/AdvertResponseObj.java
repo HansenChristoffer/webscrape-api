@@ -40,17 +40,17 @@ public class AdvertResponseObj implements Serializable {
     public AdvertResponseObj() {
     }
 
-    public AdvertResponseObj(String name, String description, double price, String published, String objectNumber,
-            String href, String categoryName, String sellerName, String condition, String brand, String size,
+    public AdvertResponseObj(String name, String categoryName, String sellerName, String description, double price,
+            String published, String objectNumber, String href, String condition, String brand, String size,
             String color, List<byte[]> images, byte[] advertPageImage) {
         this.name = name;
+        this.categoryName = categoryName;
+        this.sellerName = sellerName;
         this.description = description;
         this.price = price;
         this.published = published;
         this.objectNumber = objectNumber;
         this.href = href;
-        this.categoryName = categoryName;
-        this.sellerName = sellerName;
         this.condition = condition;
         this.brand = brand;
         this.size = size;
