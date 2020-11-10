@@ -6,9 +6,10 @@ import java.time.Instant;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.FieldType;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
@@ -18,9 +19,10 @@ public class Category implements Serializable {
     public Category() {
     }
 
-    public Category(String name, String href) {
+    public Category(String name, String href, boolean isOpen) {
         this.name = name;
         this.href = href;
+        this.isOpen = isOpen;
     }
 
     /**
@@ -28,13 +30,15 @@ public class Category implements Serializable {
      */
     private static final long serialVersionUID = -2371741008467000093L;
 
-    @Id
+    @MongoId(value = FieldType.OBJECT_ID)
     private String id;
 
-    @Indexed(unique = true)
     private String name;
 
+    @Indexed(unique = true)
     private String href;
+
+    private boolean isOpen = true;
 
     @DateTimeFormat(iso = ISO.DATE_TIME)
     private Instant addedDate;
@@ -63,6 +67,14 @@ public class Category implements Serializable {
         this.href = href;
     }
 
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(boolean isOpen) {
+        this.isOpen = isOpen;
+    }
+
     public Instant getAddedDate() {
         return addedDate;
     }
@@ -73,12 +85,13 @@ public class Category implements Serializable {
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("id", id).append("name", name).append("href", href).toString();
+        return new ToStringBuilder(this).append("id", id).append("name", name).append("href", href)
+                .append("isOpen", isOpen).toString();
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(name).append(id).append(href).toHashCode();
+        return new HashCodeBuilder().append(name).append(id).append(href).append(isOpen).toHashCode();
     }
 
     @Override
@@ -90,6 +103,7 @@ public class Category implements Serializable {
             return false;
         }
         Category rhs = ((Category) other);
-        return new EqualsBuilder().append(name, rhs.name).append(id, rhs.id).append(href, rhs.href).isEquals();
+        return new EqualsBuilder().append(name, rhs.name).append(id, rhs.id).append(href, rhs.href)
+                .append(isOpen, rhs.isOpen).isEquals();
     }
 }

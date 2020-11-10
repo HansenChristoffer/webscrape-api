@@ -32,3 +32,8 @@ hs_err_pid*
 # Settings
 .vscode
 .idea
+/target
+/target/*
+
+# Misc
+application.properties

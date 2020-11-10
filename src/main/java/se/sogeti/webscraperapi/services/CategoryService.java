@@ -1,95 +1,138 @@
 package se.sogeti.webscraperapi.services;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Random;
+import java.util.Set;
 
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.IanaLinkRelations;
+import org.bson.types.ObjectId;
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import se.sogeti.webscraperapi.assemblers.CategoryModelAssembler;
-import se.sogeti.webscraperapi.controllers.CategoryController;
+import lombok.extern.slf4j.Slf4j;
 import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
+import se.sogeti.webscraperapi.exceptions.EmptyListException;
 import se.sogeti.webscraperapi.models.Category;
 import se.sogeti.webscraperapi.repositories.CategoryRepository;
 
 @Service
+@Slf4j
 public class CategoryService {
 
-    private final CategoryRepository repository;
-    private final CategoryModelAssembler assembler;
+    private final CategoryRepository categoryRepository;
+    private static final Random RAND = new Random();
 
-    CategoryService(CategoryRepository repository, CategoryModelAssembler assembler) {
-        this.repository = repository;
-        this.assembler = assembler;
+    CategoryService(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
     }
 
-    public EntityModel<Category> findById(String id) {
-        Category category = repository.findById(id) //
-                .orElseThrow(() -> new AbstractNotFoundException(id));
+    public Category findOpen() {
+        List<Category> links = new ArrayList<>(categoryRepository.findOpen());
 
-        return assembler.toModel(category);
+        if (links.isEmpty()) {
+            throw new EmptyListException();
+        }
+
+        Category category = links.get(RAND.nextInt(links.size()));
+        closeCategory(category.getHref());
+
+        return category;
     }
 
-    public CollectionModel<EntityModel<Category>> findAll() {
-        List<EntityModel<Category>> categories = repository.findAll().stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
-
-        return CollectionModel.of(categories, linkTo(methodOn(CategoryController.class).findAll()).withSelfRel());
+    public Category findByObjectId(String id) {
+        return categoryRepository.findByObjectId(new ObjectId(id)).orElseThrow(() -> new AbstractNotFoundException(id));
     }
 
-    public EntityModel<Category> findByName(String name) {
-        Category category = repository.findByName(name) //
-                .orElseThrow(() -> new AbstractNotFoundException(name));
-
-                return assembler.toModel(category);
+    public Collection<Category> findAll() {
+        return categoryRepository.findAll();
     }
 
-    public EntityModel<Category> findByHref(String href) {
-        Category category = repository.findByHref(href) //
-                .orElseThrow(() -> new AbstractNotFoundException(href));
-
-                return assembler.toModel(category);
+    public Category findByName(String name) {
+        return categoryRepository.findByName(name).orElseThrow(() -> new AbstractNotFoundException(name));
     }
 
-    public ResponseEntity<EntityModel<Category>> createCategory(Category newCategory) {
+    public Category findByHref(String href) {
+        return categoryRepository.findByHref(href).orElseThrow(() -> new AbstractNotFoundException(href));
+    }
+
+    public ResponseEntity<Category> createCategory(Category newCategory) {
         newCategory.setAddedDate(Instant.now());
 
-        EntityModel<Category> entityModel = assembler.toModel(repository.save(newCategory));
+        try {
+            return ResponseEntity.ok(categoryRepository.save(newCategory));
+        } catch (DuplicateKeyException e) {
+            log.info("Duplicate key at Category!");
+        }
 
-        return ResponseEntity //
-                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-                .body(entityModel);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new Category());
     }
 
-    public ResponseEntity<EntityModel<Category>> replaceCategory(Category newCategory, String id) {
-    
-        Category updatedCategory = repository.findById(id) //
-          .map(category -> {
+    public ResponseEntity<Collection<Category>> createAllCategories(Set<Category> newCategories) {
+        Set<Category> savedCategory = new HashSet<>();
+        Category newCategory;
+
+        for (Category c : newCategories) {
+            c.setOpen(true);
+            try {
+
+                newCategory = categoryRepository.save(c);
+
+                if (!newCategory.getHref().isBlank()) {
+                    savedCategory.add(newCategory);
+                }
+
+            } catch (Exception e) {
+                log.error("CreateAllCategory().Exception == {}", e.getMessage());
+            }
+        }
+
+        if (savedCategory.size() == newCategories.size()) {
+            return ResponseEntity.ok(savedCategory);
+        } else if (!savedCategory.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body(savedCategory);
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(savedCategory);
+        }
+    }
+
+    // public ResponseEntity<Collection<Category>> createAllCategories(Set<Category>
+    // newCategories) {
+    // try {
+    // return ResponseEntity.ok(categoryRepository.saveAll(newCategories));
+    // } catch (DuplicateKeyException e) {
+    // log.info("Duplicate key at Category!");
+    // }
+
+    // return ResponseEntity.status(HttpStatus.CONFLICT).body(new ArrayList<>());
+    // }
+
+    public ResponseEntity<Category> replaceCategory(Category newCategory, String id) {
+        return categoryRepository.findByObjectId(new ObjectId(id)).map(category -> {
             category.setName(newCategory.getName());
             category.setHref(newCategory.getHref());
-            return repository.save(category);
-          }) //
-          .orElseGet(() -> {
+            return ResponseEntity.ok(categoryRepository.save(category));
+        }).orElseGet(() -> {
             newCategory.setId(id);
-            return repository.save(newCategory);
-          });
-    
-      EntityModel<Category> entityModel = assembler.toModel(updatedCategory);
-    
-      return ResponseEntity //
-          .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()) //
-          .body(entityModel);
+            return ResponseEntity.ok(categoryRepository.save(newCategory));
+        });
+    }
+
+    public ResponseEntity<Category> closeCategory(String href) {
+        Category category = categoryRepository.findByHref(href).orElseThrow(() -> new AbstractNotFoundException(href));
+        category.setOpen(false);
+
+        Category updatedCategory = categoryRepository.save(category);
+
+        return !updatedCategory.isOpen() ? ResponseEntity.ok(category)
+                : ResponseEntity.status(HttpStatus.CONFLICT).body(new Category());
     }
 
     public void deleteAll() {
-        repository.deleteAll();
+        categoryRepository.deleteAll();
     }
 }

@@ -1,7 +1,7 @@
 package se.sogeti.webscraperapi.controllers;
 
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
+import java.util.Collection;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,37 +25,37 @@ public class AdvertController {
     }
 
     @GetMapping(value = "/adverts/id")
-    public EntityModel<Advert> findById(@RequestParam String value) {
-        return service.findById(value);
+    public Advert findByObjectId(@RequestParam String value) {
+        return service.findByObjectId(value);
     }
 
     @GetMapping(value = "/adverts")
-    public CollectionModel<EntityModel<Advert>> findAll() {
+    public Collection<Advert> findAll() {
         return service.findAll();
     }
 
     @GetMapping(value = "/adverts/name")
-    public EntityModel<Advert> findByName(@RequestParam String value) {
+    public Advert findByName(@RequestParam String value) {
         return service.findByName(value);
     }
 
     @GetMapping(value = "/adverts/href")
-    public EntityModel<Advert> findByHref(@RequestParam String value) {
+    public Advert findByHref(@RequestParam String value) {
         return service.findByHref(value);
     }
 
     @GetMapping(value = "/adverts/obn")
-    public EntityModel<Advert> findByObjectNumber(@RequestParam String value) {
+    public Advert findByObjectNumber(@RequestParam String value) {
         return service.findByObjectNumber(value);
     }
 
     @PostMapping(value = "/adverts")
-    public ResponseEntity<EntityModel<Advert>> createAdvert(@RequestBody Advert newAdvert) {
+    public ResponseEntity<Advert> createAdvert(@RequestBody Advert newAdvert) {
         return service.createAdvert(newAdvert);
     }
 
     @PutMapping(value = "/adverts/id")
-    public ResponseEntity<EntityModel<Advert>> replaceAdvert(@RequestBody Advert newAdvert, @RequestParam String value) {
+    public ResponseEntity<Advert> replaceAdvert(@RequestBody Advert newAdvert, @RequestParam String value) {
         return service.replaceAdvert(newAdvert, value);
     }
 

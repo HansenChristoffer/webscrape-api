@@ -1,10 +1,8 @@
 package se.sogeti.webscraperapi.controllers;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Set;
 
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,28 +26,32 @@ public class LinkController {
     }
 
     @GetMapping("/links/open")
-    public EntityModel<Link> findOpen() {
+    public ResponseEntity<Link> findOpen() {
         return service.findOpen();
     }
 
     @GetMapping("/links/href")
-    public EntityModel<Link> findByHref(@RequestParam String value) {
+    public Link findByHref(@RequestParam String value) {
         return service.findByHref(value);
     }
 
+    @GetMapping("/links")
+    public Collection<Link> findAll() {
+        return service.findAll();
+    }
+
     @PostMapping("/links")
-    public ResponseEntity<EntityModel<Link>> createLink(@RequestBody Link link) {
+    public ResponseEntity<Link> createLink(@RequestBody Link link) {
         return service.createLink(link);
     }
 
     @PostMapping("/links/all")
-    public ResponseEntity<CollectionModel<EntityModel<Link>>> createAllLinks(@RequestBody List<Link> links) {
+    public ResponseEntity<Collection<Link>> createAllLinks(@RequestBody Set<Link> links) {
         return service.createAllLinks(links);
     }
 
     @DeleteMapping("/links/id")
-    public ResponseEntity<Link> deleteById(@RequestParam String value) {
-        return service.deleteById(value) ? new ResponseEntity<>(HttpStatus.NO_CONTENT)
-                : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> deleteById(@RequestParam String value) {
+        return service.deleteById(value);
     }
 }
