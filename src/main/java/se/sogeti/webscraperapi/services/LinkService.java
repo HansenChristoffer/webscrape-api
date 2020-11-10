@@ -32,12 +32,13 @@ public class LinkService {
 		List<Link> links = new ArrayList<>(linkRepository.findOpen());
 
 		if (links.isEmpty()) {
-
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Link());
 		}
 
 		Link link = links.get(RAND.nextInt(links.size()));
 		closeLink(link.getHref());
+
+		log.info("Links.size == {}, Link sending == {}", links.size(), link);
 
 		return ResponseEntity.ok(link);
 	}
