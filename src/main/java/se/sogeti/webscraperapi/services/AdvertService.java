@@ -1,7 +1,14 @@
 package se.sogeti.webscraperapi.services;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.bson.types.ObjectId;
 import org.springframework.dao.DuplicateKeyException;
@@ -12,6 +19,7 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
 import se.sogeti.webscraperapi.models.Advert;
+import se.sogeti.webscraperapi.models.AdvertResponseObj;
 import se.sogeti.webscraperapi.repositories.AdvertRepository;
 
 @Service
@@ -45,13 +53,17 @@ public class AdvertService {
                 .orElseThrow(() -> new AbstractNotFoundException(objectNumber));
     }
 
-    public ResponseEntity<Advert> createAdvert(Advert newAdvert) {
+    public ResponseEntity<Advert> createAdvert(AdvertResponseObj advertResponseObj) {
+        Advert newAdvert = advertResponseObj.build();
         newAdvert.setAddedDate(Instant.now());
+
+        saveImages(advertResponseObj.getImages(), advertResponseObj.getAdvertPageImage(),
+                advertResponseObj.getObjectNumber());
 
         try {
             return ResponseEntity.ok(advertRepository.save(newAdvert));
         } catch (DuplicateKeyException e) {
-            log.info("Duplicate key at Advert!");
+            log.error("Duplicate key at Advert!");
         }
 
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new Advert());
@@ -77,5 +89,26 @@ public class AdvertService {
 
     public void deleteAll() {
         advertRepository.deleteAll();
+    }
+
+    private void saveImages(List<byte[]> images, byte[] advertPageImage, String objectNumber) {
+        images.forEach(img -> {
+            try (ByteArrayInputStream bis = new ByteArrayInputStream(img);) {
+                BufferedImage bImg = ImageIO.read(bis);
+                ImageIO.write(bImg, "jpg", new File("src/main/resources/images/".concat(objectNumber).concat("-")
+                        .concat(String.valueOf(images.indexOf(img)))));
+            } catch (IOException ioe) {
+                log.error("saveImages().IOException[0] == {}", ioe.getMessage());
+            }
+        });
+
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(advertPageImage);) {
+            BufferedImage bImg = ImageIO.read(bis);
+            ImageIO.write(bImg, "jpg",
+                    new File("src/main/resources/images/".concat(objectNumber).concat("-").concat("advertPageImage")));
+        } catch (IOException ioe) {
+            log.error("saveImages().IOException[1] == {}", ioe.getMessage());
+        }
+
     }
 }

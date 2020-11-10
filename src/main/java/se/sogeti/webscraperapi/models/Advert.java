@@ -2,6 +2,7 @@ package se.sogeti.webscraperapi.models;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -21,7 +22,7 @@ public class Advert implements Serializable {
 
     public Advert(String name, String categoryName, String sellerName, String description, double price,
             String published, String objectNumber, String href, String condition, String brand, String size,
-            String color, byte[] image) {
+            String color, List<String> imageNames, String advertPageImageName) {
         this.name = name;
         this.categoryName = categoryName;
         this.sellerName = sellerName;
@@ -34,7 +35,8 @@ public class Advert implements Serializable {
         this.brand = brand;
         this.size = size;
         this.color = color;
-        this.image = image;
+        this.imageNames = imageNames;
+        this.advertPageImageName = advertPageImageName;
     }
 
     private static final long serialVersionUID = 1331200230166367593L;
@@ -67,7 +69,9 @@ public class Advert implements Serializable {
 
     private String color;
 
-    private byte[] image;
+    private List<String> imageNames;
+
+    private String advertPageImageName;
 
     @DateTimeFormat(iso = ISO.DATE_TIME)
     private Instant addedDate;
@@ -184,12 +188,20 @@ public class Advert implements Serializable {
         this.addedDate = addedDate;
     }
 
-    public byte[] getImage() {
-        return image;
+    public List<String> getImage() {
+        return imageNames;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setImage(List<String> imageNames) {
+        this.imageNames = imageNames;
+    }
+
+    public String getAdvertPageImageName() {
+        return advertPageImageName;
+    }
+
+    public void setAdvertPageImageName(String advertPageImageName) {
+        this.advertPageImageName = advertPageImageName;
     }
 
     @Override
@@ -198,14 +210,15 @@ public class Advert implements Serializable {
                 .append("Condition", condition).append("brand", brand).append("size", size).append("color", color)
                 .append("price", price).append("published", published).append("objectNumber", objectNumber)
                 .append("href", href).append("categoryName", categoryName).append("sellerName", sellerName)
-                .append("image", image).toString();
+                .append("imageNames", imageNames).append("advertPageImageName", advertPageImageName).toString();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder().append(sellerName).append(price).append(name).append(objectNumber)
                 .append(description).append(condition).append(color).append(size).append(brand).append(id)
-                .append(published).append(href).append(categoryName).append(sellerName).append(image).toHashCode();
+                .append(published).append(href).append(categoryName).append(sellerName).append(imageNames)
+                .append(advertPageImageName).toHashCode();
     }
 
     @Override
@@ -221,7 +234,8 @@ public class Advert implements Serializable {
                 .append(objectNumber, rhs.objectNumber).append(description, rhs.description).append(id, rhs.id)
                 .append(published, rhs.published).append(href, rhs.href).append(categoryName, rhs.categoryName)
                 .append(condition, rhs.condition).append(brand, rhs.brand).append(size, rhs.size)
-                .append(color, rhs.color).append(image, rhs.image).isEquals();
+                .append(color, rhs.color).append(imageNames, rhs.imageNames)
+                .append(advertPageImageName, rhs.advertPageImageName).isEquals();
     }
 
 }
