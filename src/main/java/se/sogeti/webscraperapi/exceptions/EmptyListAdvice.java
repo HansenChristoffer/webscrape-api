@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class EmptyLinkListAdvice {
-    
-    @ExceptionHandler(EmptyLinkListException.class)
+public class EmptyListAdvice {
+
+    @ExceptionHandler(EmptyListException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    String emptyLinkListAdvice(EmptyLinkListException e) {
+    String emptyLinkListAdvice(EmptyListException e) {
         return e.getMessage();
-    }    
+    }
 }

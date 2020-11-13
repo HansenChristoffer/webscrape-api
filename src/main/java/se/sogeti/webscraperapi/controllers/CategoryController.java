@@ -1,6 +1,7 @@
 package se.sogeti.webscraperapi.controllers;
 
 import java.util.Collection;
+import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +23,11 @@ public class CategoryController {
 
     CategoryController(CategoryService service) {
         this.service = service;
+    }
+
+    @GetMapping("/categories/open")
+    public Category findOpen() {
+        return service.findOpen();
     }
 
     @GetMapping(value = "/categories/id")
@@ -47,6 +53,11 @@ public class CategoryController {
     @PostMapping(value = "/categories")
     public ResponseEntity<Category> createCategory(@RequestBody Category newCategory) {
         return service.createCategory(newCategory);
+    }
+
+    @PostMapping(value = "/categories/all")
+    public ResponseEntity<Collection<Category>> createCategory(@RequestBody Set<Category> newCategories) {
+        return service.createAllCategories(newCategories);
     }
 
     @PutMapping(value = "/categories/id")

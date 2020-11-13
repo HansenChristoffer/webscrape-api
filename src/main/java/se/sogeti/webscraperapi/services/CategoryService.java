@@ -1,7 +1,12 @@
 package se.sogeti.webscraperapi.services;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import org.bson.types.ObjectId;
 import org.springframework.dao.DuplicateKeyException;
@@ -11,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
+import se.sogeti.webscraperapi.exceptions.EmptyListException;
 import se.sogeti.webscraperapi.models.Category;
 import se.sogeti.webscraperapi.repositories.CategoryRepository;
 
@@ -19,9 +25,23 @@ import se.sogeti.webscraperapi.repositories.CategoryRepository;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private static final Random RAND = new Random();
 
     CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
+    }
+
+    public Category findOpen() {
+        List<Category> links = new ArrayList<>(categoryRepository.findOpen());
+
+        if (links.isEmpty()) {
+            throw new EmptyListException();
+        }
+
+        Category category = links.get(RAND.nextInt(links.size()));
+        closeCategory(category.getHref());
+
+        return category;
     }
 
     public Category findByObjectId(String id) {
@@ -52,6 +72,45 @@ public class CategoryService {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new Category());
     }
 
+    public ResponseEntity<Collection<Category>> createAllCategories(Set<Category> newCategories) {
+        Set<Category> savedCategory = new HashSet<>();
+        Category newCategory;
+
+        for (Category c : newCategories) {
+            c.setOpen(true);
+            try {
+
+                newCategory = categoryRepository.save(c);
+
+                if (!newCategory.getHref().isBlank()) {
+                    savedCategory.add(newCategory);
+                }
+
+            } catch (Exception e) {
+                log.error("CreateAllCategory().Exception == {}", e.getMessage());
+            }
+        }
+
+        if (savedCategory.size() == newCategories.size()) {
+            return ResponseEntity.ok(savedCategory);
+        } else if (!savedCategory.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body(savedCategory);
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(savedCategory);
+        }
+    }
+
+    // public ResponseEntity<Collection<Category>> createAllCategories(Set<Category>
+    // newCategories) {
+    // try {
+    // return ResponseEntity.ok(categoryRepository.saveAll(newCategories));
+    // } catch (DuplicateKeyException e) {
+    // log.info("Duplicate key at Category!");
+    // }
+
+    // return ResponseEntity.status(HttpStatus.CONFLICT).body(new ArrayList<>());
+    // }
+
     public ResponseEntity<Category> replaceCategory(Category newCategory, String id) {
         return categoryRepository.findByObjectId(new ObjectId(id)).map(category -> {
             category.setName(newCategory.getName());
@@ -61,6 +120,16 @@ public class CategoryService {
             newCategory.setId(id);
             return ResponseEntity.ok(categoryRepository.save(newCategory));
         });
+    }
+
+    public ResponseEntity<Category> closeCategory(String href) {
+        Category category = categoryRepository.findByHref(href).orElseThrow(() -> new AbstractNotFoundException(href));
+        category.setOpen(false);
+
+        Category updatedCategory = categoryRepository.save(category);
+
+        return !updatedCategory.isOpen() ? ResponseEntity.ok(category)
+                : ResponseEntity.status(HttpStatus.CONFLICT).body(new Category());
     }
 
     public void deleteAll() {
