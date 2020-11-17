@@ -14,7 +14,6 @@ import se.sogeti.webscraperapi.services.SellerService;
 @Configuration
 public class LoadDatabase {
 
-  private final String preloadLoggerMsg = "<$> Preloading : ";
   private CategoryService categoryService;
   private SellerService sellerService;
   private AdvertService advertService;

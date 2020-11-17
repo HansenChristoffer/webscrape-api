@@ -2,6 +2,7 @@ package se.sogeti.webscraperapi.models;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,7 +21,7 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 @Document(collection = "scrapes_adverts")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "id", "title", "description", "openingBid", "startDate", "endDate", "itemId", "canonicalURL",
-        "categoryId", "memberId", "condition", "brand", "sizes", "colors", "allowedBuyerRegion", "shipsToBuyer",
+        "categoryId", "memberId", "condition", "brands", "sizes", "colors", "allowedBuyerRegion", "shipsToBuyer",
         "isAuction", "images", "createdDate", "lastModifiedDate" })
 public class Advert implements Serializable {
 
@@ -59,11 +60,11 @@ public class Advert implements Serializable {
     @JsonProperty("condition")
     private String condition;
 
-    @JsonProperty("brand")
-    private Set<String> brand = null;
+    @JsonProperty("brands")
+    private Set<String> brands = null;
 
     @JsonProperty("sizes")
-    private Set<Integer> sizes = null;
+    private Set<String> sizes = null;
 
     @JsonProperty("colors")
     private Set<String> colors = null;
@@ -101,6 +102,7 @@ public class Advert implements Serializable {
 
     /**
      *
+     * @param id
      * @param images
      * @param endDate
      * @param canonicalURL
@@ -114,16 +116,16 @@ public class Advert implements Serializable {
      * @param condition
      * @param sizes
      * @param shipsToBuyer
-     * @param brand
+     * @param brands
      * @param startDate
      * @param categoryId
      * @param memberId
      */
-    public Advert(String title, String description, Double openingBid, String startDate, String endDate, Integer itemId,
-            String canonicalURL, Integer categoryId, Integer memberId, String condition, Set<String> brand,
-            Set<Integer> sizes, Set<String> colors, String allowedBuyerRegion, Boolean shipsToBuyer, Boolean isAuction,
-            Set<String> images) {
-        super();
+    public Advert(String id, String title, String description, Double openingBid, String startDate, String endDate,
+            Integer itemId, String canonicalURL, Integer categoryId, Integer memberId, String condition,
+            Set<String> brands, Set<String> sizes, Set<String> colors, String allowedBuyerRegion, Boolean shipsToBuyer,
+            Boolean isAuction, Set<String> images) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.openingBid = openingBid;
@@ -134,13 +136,46 @@ public class Advert implements Serializable {
         this.categoryId = categoryId;
         this.memberId = memberId;
         this.condition = condition;
-        this.brand = brand;
+        this.brands = brands;
         this.sizes = sizes;
         this.colors = colors;
         this.allowedBuyerRegion = allowedBuyerRegion;
         this.shipsToBuyer = shipsToBuyer;
         this.isAuction = isAuction;
         this.images = images;
+    }
+
+    public Advert(String title, String description, Double openingBid, String startDate, String endDate, Integer itemId,
+            String canonicalURL, Integer categoryId, Integer memberId, String condition, Set<String> brands,
+            Set<String> sizes, Set<String> colors, String allowedBuyerRegion, Boolean shipsToBuyer, Boolean isAuction,
+            Set<String> images) {
+        this.title = title;
+        this.description = description;
+        this.openingBid = openingBid;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.itemId = itemId;
+        this.canonicalURL = canonicalURL;
+        this.categoryId = categoryId;
+        this.memberId = memberId;
+        this.condition = condition;
+        this.brands = brands;
+        this.sizes = sizes;
+        this.colors = colors;
+        this.allowedBuyerRegion = allowedBuyerRegion;
+        this.shipsToBuyer = shipsToBuyer;
+        this.isAuction = isAuction;
+        this.images = images;
+    }
+
+    @JsonProperty("id")
+    public String getId() {
+        return this.id;
+    }
+
+    @JsonProperty("id")
+    public void setId(String id) {
+        this.id = id;
     }
 
     @JsonProperty("title")
@@ -243,23 +278,23 @@ public class Advert implements Serializable {
         this.condition = condition;
     }
 
-    @JsonProperty("brand")
-    public Set<String> getBrand() {
-        return brand;
+    @JsonProperty("brands")
+    public Set<String> getBrands() {
+        return brands;
     }
 
-    @JsonProperty("brand")
-    public void setBrand(Set<String> brand) {
-        this.brand = brand;
+    @JsonProperty("brands")
+    public void setBrands(Set<String> brands) {
+        this.brands = brands;
     }
 
     @JsonProperty("sizes")
-    public Set<Integer> getSizes() {
+    public Set<String> getSizes() {
         return sizes;
     }
 
     @JsonProperty("sizes")
-    public void setSizes(Set<Integer> sizes) {
+    public void setSizes(Set<String> sizes) {
         this.sizes = sizes;
     }
 
@@ -311,6 +346,67 @@ public class Advert implements Serializable {
     @JsonProperty("images")
     public void setImages(Set<String> images) {
         this.images = images;
+    }
+
+    @JsonProperty("createdDate")
+    public Instant getCreatedDate() {
+        return this.createdDate;
+    }
+
+    @JsonProperty("createdDate")
+    public void setCreatedDate(Instant createdDate) {
+        this.createdDate = createdDate;
+    }
+
+    @JsonProperty("lastModifiedDate")
+    public Instant getLastModifiedDate() {
+        return this.lastModifiedDate;
+    }
+
+    @JsonProperty("lastModifiedDate")
+    public void setLastModifiedDate(Instant lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Advert)) {
+            return false;
+        }
+        Advert advert = (Advert) o;
+        return Objects.equals(id, advert.id) && Objects.equals(title, advert.title)
+                && Objects.equals(description, advert.description) && Objects.equals(openingBid, advert.openingBid)
+                && Objects.equals(startDate, advert.startDate) && Objects.equals(endDate, advert.endDate)
+                && Objects.equals(itemId, advert.itemId) && Objects.equals(canonicalURL, advert.canonicalURL)
+                && Objects.equals(categoryId, advert.categoryId) && Objects.equals(memberId, advert.memberId)
+                && Objects.equals(condition, advert.condition) && Objects.equals(brands, advert.brands)
+                && Objects.equals(sizes, advert.sizes) && Objects.equals(colors, advert.colors)
+                && Objects.equals(allowedBuyerRegion, advert.allowedBuyerRegion)
+                && Objects.equals(shipsToBuyer, advert.shipsToBuyer) && Objects.equals(isAuction, advert.isAuction)
+                && Objects.equals(images, advert.images) && Objects.equals(createdDate, advert.createdDate)
+                && Objects.equals(lastModifiedDate, advert.lastModifiedDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, description, openingBid, startDate, endDate, itemId, canonicalURL, categoryId,
+                memberId, condition, brands, sizes, colors, allowedBuyerRegion, shipsToBuyer, isAuction, images,
+                createdDate, lastModifiedDate);
+    }
+
+    @Override
+    public String toString() {
+        return "{" + " id='" + getId() + "'" + ", title='" + getTitle() + "'" + ", description='" + getDescription()
+                + "'" + ", openingBid='" + getOpeningBid() + "'" + ", startDate='" + getStartDate() + "'"
+                + ", endDate='" + getEndDate() + "'" + ", itemId='" + getItemId() + "'" + ", canonicalURL='"
+                + getCanonicalURL() + "'" + ", categoryId='" + getCategoryId() + "'" + ", memberId='" + getMemberId()
+                + "'" + ", condition='" + getCondition() + "'" + ", brand='" + getBrands() + "'" + ", sizes='"
+                + getSizes() + "'" + ", colors='" + getColors() + "'" + ", allowedBuyerRegion='"
+                + getAllowedBuyerRegion() + "'" + ", shipsToBuyer='" + getShipsToBuyer() + "'" + ", isAuction='"
+                + isAuction() + "'" + ", images='" + getImages() + "'" + ", createdDate='" + getCreatedDate() + "'"
+                + ", lastModifiedDate='" + getLastModifiedDate() + "'" + "}";
     }
 
 }

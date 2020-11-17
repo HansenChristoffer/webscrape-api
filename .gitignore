@@ -34,3 +34,6 @@ hs_err_pid*
 .idea
 /target
 /target/*
+
+# Misc
+application.properties

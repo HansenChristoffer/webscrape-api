@@ -71,6 +71,7 @@ public class Seller implements Serializable {
 
     /**
      *
+     * @param id
      * @param city
      * @param canonicalURL
      * @param alias

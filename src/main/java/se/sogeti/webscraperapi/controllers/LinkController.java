@@ -1,7 +1,7 @@
 package se.sogeti.webscraperapi.controllers;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -46,7 +46,7 @@ public class LinkController {
     }
 
     @PostMapping("/links/all")
-    public ResponseEntity<Collection<Link>> createAllLinks(@RequestBody List<Link> links) {
+    public ResponseEntity<Collection<Link>> createAllLinks(@RequestBody Set<Link> links) {
         return service.createAllLinks(links);
     }
 

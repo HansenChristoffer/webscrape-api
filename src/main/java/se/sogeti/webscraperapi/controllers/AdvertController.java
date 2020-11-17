@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import se.sogeti.webscraperapi.models.Advert;
+import se.sogeti.webscraperapi.models.AdvertResponseObj;
 import se.sogeti.webscraperapi.services.AdvertService;
 
 @RestController
@@ -50,8 +51,8 @@ public class AdvertController {
     }
 
     @PostMapping(value = "/adverts")
-    public ResponseEntity<Advert> createAdvert(@RequestBody Advert newAdvert) {
-        return service.createAdvert(newAdvert);
+    public ResponseEntity<Advert> createAdvert(@RequestBody AdvertResponseObj advertResponseObj) {
+        return service.createAdvert(advertResponseObj);
     }
 
     @PutMapping(value = "/adverts/id")

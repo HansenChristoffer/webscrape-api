@@ -2,8 +2,10 @@ package se.sogeti.webscraperapi.services;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
@@ -30,14 +32,15 @@ public class LinkService {
 		List<Link> links = new ArrayList<>(linkRepository.findOpen());
 
 		if (links.isEmpty()) {
-			
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Link());
 		}
 
 		Link link = links.get(RAND.nextInt(links.size()));
 		closeLink(link.getHref());
 
-		return  ResponseEntity.ok(link);
+		log.info("Links.size == {}, Link sending == {}", links.size(), link);
+
+		return ResponseEntity.ok(link);
 	}
 
 	public Collection<Link> findAll() {
@@ -48,11 +51,45 @@ public class LinkService {
 		return linkRepository.findByHref(href).orElseThrow(() -> new AbstractNotFoundException(href));
 	}
 
-	public ResponseEntity<Collection<Link>> createAllLinks(List<Link> newLinks) {
-		newLinks.forEach(link -> link.setIsOpen(true));
+	public ResponseEntity<Collection<Link>> createAllLinks(Set<Link> newLinks) {
+		Set<Link> savedLinks = new HashSet<>();
+		Link newLink;
 
-		return ResponseEntity.ok(linkRepository.saveAll(newLinks));
+		for (Link l : newLinks) {
+			l.setIsOpen(true);
+			try {
+
+				newLink = linkRepository.save(l);
+
+				if (!newLink.getHref().isBlank()) {
+					savedLinks.add(newLink);
+				}
+
+			} catch (Exception e) {
+				log.error("testCreateAllLinks().Exception == {}", e.getMessage());
+			}
+		}
+
+		if (savedLinks.size() == newLinks.size()) {
+			return ResponseEntity.ok(savedLinks);
+		} else if (!savedLinks.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT).body(savedLinks);
+		} else {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body(savedLinks);
+		}
 	}
+
+	// public ResponseEntity<Collection<Link>> createAllLinks(Set<Link> newLinks) {
+	// newLinks.forEach(l -> l.setIsOpen(true));
+
+	// try {
+	// return ResponseEntity.ok(linkRepository.saveAll(newLinks));
+	// } catch (DuplicateKeyException e) {
+	// log.info("Duplicate key at Link!");
+	// }
+
+	// return ResponseEntity.status(HttpStatus.CONFLICT).body(new ArrayList<>());
+	// }
 
 	public ResponseEntity<Link> createLink(Link newLink) {
 		newLink.setIsOpen(true);
