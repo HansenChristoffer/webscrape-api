@@ -30,9 +30,9 @@ public class LoadDatabase {
 
     return args -> {
       // Clear database
-      linkService.deleteAll();
+      // linkService.deleteAll();
       sellerService.deleteAll();
-      categoryService.deleteAll();
+      // categoryService.deleteAll();
       advertService.deleteAll();
     };
   }
