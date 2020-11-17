@@ -1,70 +1,64 @@
 package se.sogeti.webscraperapi.models;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 public class AdvertResponseObj implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-
-    private String name;
-
+    private static final long serialVersionUID = -4623796631862192959L;
+    private String title;
     private String description;
-
-    private double price;
-
-    private String published;
-
-    private String objectNumber;
-
-    private String href;
-
-    private String categoryName;
-
-    private String sellerName;
-
+    private Double openingBid;
+    private String startDate;
+    private String endDate;
+    private Integer itemId;
+    private String canonicalURL;
+    private Integer categoryId;
+    private Integer memberId;
     private String condition;
-
-    private String brand;
-
-    private String size;
-
-    private String color;
-
+    private Set<String> brands;
+    private Set<String> sizes;
+    private Set<String> colors;
+    private String allowedBuyerRegion;
+    private boolean shipsToBuyer;
+    private boolean isAuction;
     private List<byte[]> images;
-
-    private byte[] advertPageImage;
 
     public AdvertResponseObj() {
     }
 
-    public AdvertResponseObj(String name, String categoryName, String sellerName, String description, double price,
-            String published, String objectNumber, String href, String condition, String brand, String size,
-            String color, List<byte[]> images, byte[] advertPageImage) {
-        this.name = name;
-        this.categoryName = categoryName;
-        this.sellerName = sellerName;
+    public AdvertResponseObj(String title, String description, Double openingBid, String startDate, String endDate,
+            Integer itemId, String canonicalURL, Integer categoryId, Integer memberId, String condition,
+            Set<String> brands, Set<String> sizes, Set<String> colors, String allowedBuyerRegion, boolean shipsToBuyer,
+            boolean isAuction, List<byte[]> images) {
+        this.title = title;
         this.description = description;
-        this.price = price;
-        this.published = published;
-        this.objectNumber = objectNumber;
-        this.href = href;
+        this.openingBid = openingBid;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.itemId = itemId;
+        this.canonicalURL = canonicalURL;
+        this.categoryId = categoryId;
+        this.memberId = memberId;
         this.condition = condition;
-        this.brand = brand;
-        this.size = size;
-        this.color = color;
+        this.brands = brands;
+        this.sizes = sizes;
+        this.colors = colors;
+        this.allowedBuyerRegion = allowedBuyerRegion;
+        this.shipsToBuyer = shipsToBuyer;
+        this.isAuction = isAuction;
         this.images = images;
-        this.advertPageImage = advertPageImage;
     }
 
-    public String getName() {
-        return this.name;
+    public String getTitle() {
+        return this.title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {
@@ -75,52 +69,60 @@ public class AdvertResponseObj implements Serializable {
         this.description = description;
     }
 
-    public double getPrice() {
-        return this.price;
+    public Double getOpeningBid() {
+        return this.openingBid;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setOpeningBid(Double openingBid) {
+        this.openingBid = openingBid;
     }
 
-    public String getPublished() {
-        return this.published;
+    public String getStartDate() {
+        return this.startDate;
     }
 
-    public void setPublished(String published) {
-        this.published = published;
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
 
-    public String getObjectNumber() {
-        return this.objectNumber;
+    public String getEndDate() {
+        return this.endDate;
     }
 
-    public void setObjectNumber(String objectNumber) {
-        this.objectNumber = objectNumber;
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
-    public String getHref() {
-        return this.href;
+    public Integer getItemId() {
+        return this.itemId;
     }
 
-    public void setHref(String href) {
-        this.href = href;
+    public void setItemId(Integer itemId) {
+        this.itemId = itemId;
     }
 
-    public String getCategoryName() {
-        return this.categoryName;
+    public String getCanonicalURL() {
+        return this.canonicalURL;
     }
 
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
+    public void setCanonicalURL(String canonicalURL) {
+        this.canonicalURL = canonicalURL;
     }
 
-    public String getSellerName() {
-        return this.sellerName;
+    public Integer getCategoryId() {
+        return this.categoryId;
     }
 
-    public void setSellerName(String sellerName) {
-        this.sellerName = sellerName;
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public Integer getMemberId() {
+        return this.memberId;
+    }
+
+    public void setMemberId(Integer memberId) {
+        this.memberId = memberId;
     }
 
     public String getCondition() {
@@ -131,28 +133,52 @@ public class AdvertResponseObj implements Serializable {
         this.condition = condition;
     }
 
-    public String getBrand() {
-        return this.brand;
+    public Set<String> getBrands() {
+        return this.brands;
     }
 
-    public void setBrand(String brand) {
-        this.brand = brand;
+    public void setBrands(Set<String> brands) {
+        this.brands = brands;
     }
 
-    public String getSize() {
-        return this.size;
+    public Set<String> getSizes() {
+        return this.sizes;
     }
 
-    public void setSize(String size) {
-        this.size = size;
+    public void setSizes(Set<String> sizes) {
+        this.sizes = sizes;
     }
 
-    public String getColor() {
-        return this.color;
+    public Set<String> getColors() {
+        return this.colors;
     }
 
-    public void setColor(String color) {
-        this.color = color;
+    public void setColors(Set<String> colors) {
+        this.colors = colors;
+    }
+
+    public String getAllowedBuyerRegion() {
+        return this.allowedBuyerRegion;
+    }
+
+    public void setAllowedBuyerRegion(String allowedBuyerRegion) {
+        this.allowedBuyerRegion = allowedBuyerRegion;
+    }
+
+    public boolean getShipsToBuyer() {
+        return this.shipsToBuyer;
+    }
+
+    public void setShipsToBuyer(boolean shipsToBuyer) {
+        this.shipsToBuyer = shipsToBuyer;
+    }
+
+    public boolean isAuction() {
+        return this.isAuction;
+    }
+
+    public void setAuction(boolean isAuction) {
+        this.isAuction = isAuction;
     }
 
     public List<byte[]> getImages() {
@@ -163,14 +189,6 @@ public class AdvertResponseObj implements Serializable {
         this.images = images;
     }
 
-    public byte[] getAdvertPageImage() {
-        return this.advertPageImage;
-    }
-
-    public void setAdvertPageImage(byte[] advertPageImage) {
-        this.advertPageImage = advertPageImage;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == this)
@@ -179,44 +197,48 @@ public class AdvertResponseObj implements Serializable {
             return false;
         }
         AdvertResponseObj advertResponseObj = (AdvertResponseObj) o;
-        return Objects.equals(name, advertResponseObj.name)
-                && Objects.equals(description, advertResponseObj.description) && price == advertResponseObj.price
-                && Objects.equals(published, advertResponseObj.published)
-                && Objects.equals(objectNumber, advertResponseObj.objectNumber)
-                && Objects.equals(href, advertResponseObj.href)
-                && Objects.equals(categoryName, advertResponseObj.categoryName)
-                && Objects.equals(sellerName, advertResponseObj.sellerName)
+        return Objects.equals(title, advertResponseObj.title)
+                && Objects.equals(description, advertResponseObj.description)
+                && openingBid == advertResponseObj.openingBid && Objects.equals(startDate, advertResponseObj.startDate)
+                && Objects.equals(endDate, advertResponseObj.endDate)
+                && Objects.equals(itemId, advertResponseObj.itemId)
+                && Objects.equals(canonicalURL, advertResponseObj.canonicalURL)
+                && Objects.equals(categoryId, advertResponseObj.categoryId)
+                && Objects.equals(memberId, advertResponseObj.memberId)
                 && Objects.equals(condition, advertResponseObj.condition)
-                && Objects.equals(brand, advertResponseObj.brand) && Objects.equals(size, advertResponseObj.size)
-                && Objects.equals(color, advertResponseObj.color) && Objects.equals(images, advertResponseObj.images)
-                && Objects.equals(advertPageImage, advertResponseObj.advertPageImage);
+                && Objects.equals(brands, advertResponseObj.brands) && Objects.equals(sizes, advertResponseObj.sizes)
+                && Objects.equals(colors, advertResponseObj.colors)
+                && Objects.equals(allowedBuyerRegion, advertResponseObj.allowedBuyerRegion)
+                && shipsToBuyer == advertResponseObj.shipsToBuyer && isAuction == advertResponseObj.isAuction
+                && Objects.equals(images, advertResponseObj.images);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, description, price, published, objectNumber, href, categoryName, sellerName,
-                condition, brand, size, color, images, advertPageImage);
+        return Objects.hash(title, description, openingBid, startDate, endDate, itemId, canonicalURL, categoryId,
+                memberId, condition, brands, sizes, colors, allowedBuyerRegion, shipsToBuyer, isAuction, images);
     }
 
     @Override
     public String toString() {
-        return "{" + " name='" + getName() + "'" + ", description='" + getDescription() + "'" + ", price='" + getPrice()
-                + "'" + ", published='" + getPublished() + "'" + ", objectNumber='" + getObjectNumber() + "'"
-                + ", href='" + getHref() + "'" + ", categoryName='" + getCategoryName() + "'" + ", sellerName='"
-                + getSellerName() + "'" + ", condition='" + getCondition() + "'" + ", brand='" + getBrand() + "'"
-                + ", size='" + getSize() + "'" + ", color='" + getColor() + "'" + ", images='" + getImages() + "'"
-                + ", advertPageImage='" + getAdvertPageImage() + "'" + "}";
+        return "{" + " title='" + getTitle() + "'" + ", description='" + getDescription() + "'" + ", openingBid='"
+                + getOpeningBid() + "'" + ", startDate='" + getStartDate() + "'" + ", endDate='" + getEndDate() + "'"
+                + ", itemId='" + getItemId() + "'" + ", canonicalURL='" + getCanonicalURL() + "'" + ", categoryId='"
+                + getCategoryId() + "'" + ", memberId='" + getMemberId() + "'" + ", condition='" + getCondition() + "'"
+                + ", brands='" + getBrands() + "'" + ", sizes='" + getSizes() + "'" + ", colors='" + getColors() + "'"
+                + ", allowedBuyerRegion='" + getAllowedBuyerRegion() + "'" + ", shipsToBuyer='" + getShipsToBuyer()
+                + "'" + ", isAuction='" + isAuction() + "'" + ", images='" + getImages() + "'" + "}";
     }
 
     public Advert build() {
-        List<String> imgNames = new ArrayList<>();
+        Set<String> imgNames = new HashSet<>();
 
-        getImages().forEach(img -> imgNames
-                .add(getObjectNumber().concat("-").concat(String.valueOf(getImages().indexOf(img)).concat(".jpg"))));
+        getImages().forEach(img -> imgNames.add(String.valueOf(getItemId()).concat("-")
+                .concat(String.valueOf(getImages().indexOf(img)).concat(".jpg"))));
 
-        return new Advert(getName(), getCategoryName(), getSellerName(), getDescription(), getPrice(), getPublished(),
-                getObjectNumber(), getHref(), getCondition(), getBrand(), getSize(), getColor(), imgNames,
-                (getObjectNumber().concat("-").concat("advertPageImage").concat(".jpg")));
+        return new Advert(getTitle(), getDescription(), getOpeningBid(), getStartDate(), getEndDate(), getItemId(),
+                getCanonicalURL(), getCategoryId(), getMemberId(), getCondition(), getBrands(), getSizes(), getColors(),
+                getAllowedBuyerRegion(), getShipsToBuyer(), isAuction(), imgNames);
     }
 
 }
