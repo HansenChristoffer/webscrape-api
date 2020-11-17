@@ -4,10 +4,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import javax.imageio.ImageIO;
 
@@ -41,17 +39,17 @@ public class AdvertService {
         return advertRepository.findAll();
     }
 
-    public Advert findByName(String name) {
-        return advertRepository.findByName(name).orElseThrow(() -> new AbstractNotFoundException(name));
+    public Advert findByTitle(String title) {
+        return advertRepository.findByTitle(title).orElseThrow(() -> new AbstractNotFoundException(title));
     }
 
-    public Advert findByHref(String href) {
-        return advertRepository.findByHref(href).orElseThrow(() -> new AbstractNotFoundException(href));
+    public Advert findByCanonicalURL(String canonicalURL) {
+        return advertRepository.findByCanonicalURL(canonicalURL)
+                .orElseThrow(() -> new AbstractNotFoundException(canonicalURL));
     }
 
-    public Advert findByObjectNumber(String objectNumber) {
-        return advertRepository.findByObjectNumber(objectNumber)
-                .orElseThrow(() -> new AbstractNotFoundException(objectNumber));
+    public Advert findByItemId(Integer itemId) {
+        return advertRepository.findByItemId(itemId).orElseThrow(() -> new AbstractNotFoundException(itemId));
     }
 
     public ResponseEntity<Advert> createAdvert(AdvertResponseObj advertResponseObj) {

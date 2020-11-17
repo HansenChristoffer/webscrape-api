@@ -15,8 +15,10 @@ public interface SellerRepository extends MongoRepository<Seller, String> {
     @Query("{'_id': ?0}")
     public Optional<Seller> findByObjectId(ObjectId id);
 
-    public Optional<Seller> findByName(String name);
+    public Optional<Seller> findByAlias(String alias);
 
-    public Optional<Seller> findByHref(String href);
+    public Optional<Seller> findByMemberId(Integer memberId);
+
+    public Optional<Seller> findByCanonicalURL(String canonicalURL);
 
 }

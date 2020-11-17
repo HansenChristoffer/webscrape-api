@@ -34,14 +34,14 @@ public class SellerController {
         return service.findAll();
     }
 
-    @GetMapping(value = "/sellers/name")
-    public Seller findByName(@RequestParam String value) {
-        return service.findByName(value);
+    @GetMapping(value = "/sellers/alias")
+    public Seller findByAlias(@RequestParam String value) {
+        return service.findByAlias(value);
     }
 
-    @GetMapping(value = "/sellers/href")
-    public Seller findByHref(@RequestParam String value) {
-        return service.findByHref(value);
+    @GetMapping(value = "/sellers/url")
+    public Seller findByCanonicalURL(@RequestParam String value) {
+        return service.findByCanonicalURL(value);
     }
 
     @PostMapping(value = "/sellers")
