@@ -55,6 +55,10 @@ public class AdvertService {
     public ResponseEntity<Advert> createAdvert(AdvertResponseObj advertResponseObj) {
         Advert newAdvert = advertResponseObj.build();
 
+        log.info("{}", newAdvert);
+        log.info("======================================================================================");
+        log.info("{}", advertResponseObj);
+
         saveImages(advertResponseObj.getImages(), advertResponseObj.getItemId());
 
         try {
