@@ -25,8 +25,7 @@ public class SellerService {
     }
 
     public Seller findByObjectId(String id) {
-        return sellerRepository.findByObjectId(new ObjectId(id))
-                .orElseThrow(() -> new AbstractNotFoundException(id));
+        return sellerRepository.findByObjectId(new ObjectId(id)).orElseThrow(() -> new AbstractNotFoundException(id));
     }
 
     public Collection<Seller> findAll() {
@@ -44,31 +43,33 @@ public class SellerService {
     }
 
     public ResponseEntity<Seller> createSeller(Seller newSeller) {
-        newSeller.setAddedDate(Instant.now());
+        // newSeller.setAddedDate(Instant.now());
 
-        try {
-            return ResponseEntity.ok(sellerRepository.save(newSeller));
-        } catch (DuplicateKeyException e) {
-            log.info("Duplicate key at Seller!");
-        }
+        // try {
+        // return ResponseEntity.ok(sellerRepository.save(newSeller));
+        // } catch (DuplicateKeyException e) {
+        // log.info("Duplicate key at Seller!");
+        // }
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new Seller());
+        // return ResponseEntity.status(HttpStatus.CONFLICT).body(new Seller());
+
+        return null;
     }
 
     public ResponseEntity<Seller> replaceSeller(Seller newSeller, String id) {
+        // return sellerRepository.findByObjectId(new ObjectId(id)) //
+        // .map(seller -> {
+        // seller.setName(newSeller.getName());
+        // seller.setLocation(newSeller.getLocation());
+        // seller.setRegistered(newSeller.getRegistered());
+        // seller.setHref(newSeller.getHref());
+        // return ResponseEntity.ok(sellerRepository.save(seller));
 
-        return sellerRepository.findByObjectId(new ObjectId(id)) //
-                .map(seller -> {
-                    seller.setName(newSeller.getName());
-                    seller.setLocation(newSeller.getLocation());
-                    seller.setRegistered(newSeller.getRegistered());
-                    seller.setHref(newSeller.getHref());
-                    return ResponseEntity.ok(sellerRepository.save(seller));
-
-                }).orElseGet(() -> {
-                    newSeller.setId(id);
-                    return ResponseEntity.ok(sellerRepository.save(newSeller));
-                });
+        // }).orElseGet(() -> {
+        // newSeller.setId(id);
+        // return ResponseEntity.ok(sellerRepository.save(newSeller));
+        // });
+        return null;
     }
 
     public void deleteAll() {

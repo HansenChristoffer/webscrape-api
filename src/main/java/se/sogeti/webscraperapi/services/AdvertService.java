@@ -48,41 +48,48 @@ public class AdvertService {
     }
 
     public Advert findByObjectNumber(String objectNumber) {
-        return advertRepository.findByObjectNumber(objectNumber).orElseThrow(() -> new AbstractNotFoundException(objectNumber));
+        return advertRepository.findByObjectNumber(objectNumber)
+                .orElseThrow(() -> new AbstractNotFoundException(objectNumber));
     }
 
     public ResponseEntity<Advert> createAdvert(Advert newAdvert) {
-        if (!categoryRepository.findByName(newAdvert.getCategoryName()).isPresent()) {
-            categoryService.createCategory(new Category(newAdvert.getCategoryName(), "N/A"));
-        }
+        // if (!categoryRepository.findByName(newAdvert.getCategoryName()).isPresent())
+        // {
+        // categoryService.createCategory(new Category(newAdvert.getCategoryName(),
+        // "N/A"));
+        // }
 
-        newAdvert.setAddedDate(Instant.now());
+        // newAdvert.setAddedDate(Instant.now());
 
-        try {
-            return ResponseEntity.ok(advertRepository.save(newAdvert));
-        } catch (DuplicateKeyException e) {
-            log.info("Duplicate key at Advert!");
-        }
+        // try {
+        // return ResponseEntity.ok(advertRepository.save(newAdvert));
+        // } catch (DuplicateKeyException e) {
+        // log.info("Duplicate key at Advert!");
+        // }
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new Advert());
+        // return ResponseEntity.status(HttpStatus.CONFLICT).body(new Advert());
+
+        return null;
     }
 
     public ResponseEntity<Advert> replaceAdvert(Advert newAdvert, String id) {
-        return advertRepository.findByObjectId(new ObjectId(id)).map(advert -> {
-            advert.setName(newAdvert.getName());
-            advert.setCategoryName(newAdvert.getCategoryName());
-            advert.setDescription(newAdvert.getDescription());
-            advert.setHref(newAdvert.getHref());
-            advert.setObjectNumber(newAdvert.getObjectNumber());
-            advert.setPrice(newAdvert.getPrice());
-            advert.setPublished(newAdvert.getPublished());
-            advert.setSellerName(newAdvert.getSellerName());
-            advert.setImage(newAdvert.getImage());
-            return ResponseEntity.ok(advertRepository.save(advert));
-        }).orElseGet(() -> {
-            newAdvert.setId(id);
-            return ResponseEntity.ok(advertRepository.save(newAdvert));
-        });
+        // return advertRepository.findByObjectId(new ObjectId(id)).map(advert -> {
+        // advert.setName(newAdvert.getName());
+        // advert.setCategoryName(newAdvert.getCategoryName());
+        // advert.setDescription(newAdvert.getDescription());
+        // advert.setHref(newAdvert.getHref());
+        // advert.setObjectNumber(newAdvert.getObjectNumber());
+        // advert.setPrice(newAdvert.getPrice());
+        // advert.setPublished(newAdvert.getPublished());
+        // advert.setSellerName(newAdvert.getSellerName());
+        // advert.setImage(newAdvert.getImage());
+        // return ResponseEntity.ok(advertRepository.save(advert));
+        // }).orElseGet(() -> {
+        // newAdvert.setId(id);
+        // return ResponseEntity.ok(advertRepository.save(newAdvert));
+        // });
+
+        return null;
     }
 
     public void deleteAll() {

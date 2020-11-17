@@ -2,10 +2,14 @@ package se.sogeti.webscraperapi.models;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Set;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ToStringBuilder;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
@@ -14,214 +18,299 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 @Document(collection = "scrapes_adverts")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({ "id", "title", "description", "openingBid", "startDate", "endDate", "itemId", "canonicalURL",
+        "categoryId", "memberId", "condition", "brand", "sizes", "colors", "allowedBuyerRegion", "shipsToBuyer",
+        "isAuction", "images", "createdDate", "lastModifiedDate" })
 public class Advert implements Serializable {
 
-    public Advert() {
-    }
-
-    public Advert(String name, String categoryName, String sellerName, String description, double price,
-            String published, String objectNumber, String href, String condition, String brand, String size,
-            String color, byte[] image) {
-        this.name = name;
-        this.categoryName = categoryName;
-        this.sellerName = sellerName;
-        this.description = description;
-        this.price = price;
-        this.published = published;
-        this.objectNumber = objectNumber;
-        this.href = href;
-        this.condition = condition;
-        this.brand = brand;
-        this.size = size;
-        this.color = color;
-        this.image = image;
-    }
-
-    private static final long serialVersionUID = 1331200230166367593L;
-
+    @JsonProperty("id")
     @MongoId(value = FieldType.OBJECT_ID)
     private String id;
 
-    private String name;
+    @JsonProperty("title")
+    private String title;
 
-    private String categoryName;
-
-    private String sellerName;
-
+    @JsonProperty("description")
     private String description;
 
-    private double price = 0.0;
+    @JsonProperty("openingBid")
+    private Double openingBid;
 
-    private String published;
+    @JsonProperty("startDate")
+    private String startDate;
 
+    @JsonProperty("endDate")
+    private String endDate;
+
+    @JsonProperty("itemId")
     @Indexed(unique = true)
-    private String objectNumber;
+    private Integer itemId;
 
-    private String href;
+    @JsonProperty("canonicalURL")
+    private String canonicalURL;
 
+    @JsonProperty("categoryId")
+    private Integer categoryId;
+
+    @JsonProperty("memberId")
+    private Integer memberId;
+
+    @JsonProperty("condition")
     private String condition;
 
-    private String brand;
+    @JsonProperty("brand")
+    private Set<String> brand = null;
 
-    private String size;
+    @JsonProperty("sizes")
+    private Set<Integer> sizes = null;
 
-    private String color;
+    @JsonProperty("colors")
+    private Set<String> colors = null;
 
-    private byte[] image;
+    @JsonProperty("allowedBuyerRegion")
+    private String allowedBuyerRegion;
 
+    @JsonProperty("shipsToBuyer")
+    private Boolean shipsToBuyer;
+
+    @JsonProperty("isAuction")
+    private Boolean isAuction;
+
+    @JsonProperty("images")
+    private Set<String> images;
+
+    @JsonProperty("createdDate")
+    @CreatedDate
     @DateTimeFormat(iso = ISO.DATE_TIME)
-    private Instant addedDate;
+    private Instant createdDate;
 
-    public String getId() {
-        return id;
+    @JsonProperty("lastModifiedDate")
+    @LastModifiedDate
+    @DateTimeFormat(iso = ISO.DATE_TIME)
+    private Instant lastModifiedDate;
+
+    private static final long serialVersionUID = 4321153223751586030L;
+
+    /**
+     * No args constructor for use in serialization
+     *
+     */
+    public Advert() {
     }
 
-    public void setId(String id) {
-        this.id = id;
+    /**
+     *
+     * @param images
+     * @param endDate
+     * @param canonicalURL
+     * @param isAuction
+     * @param description
+     * @param allowedBuyerRegion
+     * @param title
+     * @param colors
+     * @param itemId
+     * @param openingBid
+     * @param condition
+     * @param sizes
+     * @param shipsToBuyer
+     * @param brand
+     * @param startDate
+     * @param categoryId
+     * @param memberId
+     */
+    public Advert(String title, String description, Double openingBid, String startDate, String endDate, Integer itemId,
+            String canonicalURL, Integer categoryId, Integer memberId, String condition, Set<String> brand,
+            Set<Integer> sizes, Set<String> colors, String allowedBuyerRegion, Boolean shipsToBuyer, Boolean isAuction,
+            Set<String> images) {
+        super();
+        this.title = title;
+        this.description = description;
+        this.openingBid = openingBid;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.itemId = itemId;
+        this.canonicalURL = canonicalURL;
+        this.categoryId = categoryId;
+        this.memberId = memberId;
+        this.condition = condition;
+        this.brand = brand;
+        this.sizes = sizes;
+        this.colors = colors;
+        this.allowedBuyerRegion = allowedBuyerRegion;
+        this.shipsToBuyer = shipsToBuyer;
+        this.isAuction = isAuction;
+        this.images = images;
     }
 
-    public String getName() {
-        return name;
+    @JsonProperty("title")
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    @JsonProperty("title")
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getSellerName() {
-        return sellerName;
-    }
-
-    public void setSellerName(String sellerName) {
-        this.sellerName = sellerName;
-    }
-
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
+    @JsonProperty("description")
     public String getDescription() {
         return description;
     }
 
+    @JsonProperty("description")
     public void setDescription(String description) {
         this.description = description;
     }
 
-    public double getPrice() {
-        return price;
+    @JsonProperty("openingBid")
+    public Double getOpeningBid() {
+        return openingBid;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    @JsonProperty("openingBid")
+    public void setOpeningBid(Double openingBid) {
+        this.openingBid = openingBid;
     }
 
-    public String getPublished() {
-        return published;
+    @JsonProperty("startDate")
+    public String getStartDate() {
+        return startDate;
     }
 
-    public void setPublished(String published) {
-        this.published = published;
+    @JsonProperty("startDate")
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
     }
 
-    public String getObjectNumber() {
-        return objectNumber;
+    @JsonProperty("endDate")
+    public String getEndDate() {
+        return endDate;
     }
 
-    public void setObjectNumber(String objectNumber) {
-        this.objectNumber = objectNumber;
+    @JsonProperty("endDate")
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
-    public String getHref() {
-        return href;
+    @JsonProperty("itemId")
+    public Integer getItemId() {
+        return itemId;
     }
 
-    public void setHref(String href) {
-        this.href = href;
+    @JsonProperty("itemId")
+    public void setItemId(Integer itemId) {
+        this.itemId = itemId;
     }
 
+    @JsonProperty("canonicalURL")
+    public String getCanonicalURL() {
+        return canonicalURL;
+    }
+
+    @JsonProperty("canonicalURL")
+    public void setCanonicalURL(String canonicalURL) {
+        this.canonicalURL = canonicalURL;
+    }
+
+    @JsonProperty("categoryId")
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    @JsonProperty("categoryId")
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    @JsonProperty("memberId")
+    public Integer getMemberId() {
+        return memberId;
+    }
+
+    @JsonProperty("memberId")
+    public void setMemberId(Integer memberId) {
+        this.memberId = memberId;
+    }
+
+    @JsonProperty("condition")
     public String getCondition() {
         return condition;
     }
 
+    @JsonProperty("condition")
     public void setCondition(String condition) {
         this.condition = condition;
     }
 
-    public String getBrand() {
+    @JsonProperty("brand")
+    public Set<String> getBrand() {
         return brand;
     }
 
-    public void setBrand(String brand) {
+    @JsonProperty("brand")
+    public void setBrand(Set<String> brand) {
         this.brand = brand;
     }
 
-    public String getSize() {
-        return size;
+    @JsonProperty("sizes")
+    public Set<Integer> getSizes() {
+        return sizes;
     }
 
-    public void setSize(String size) {
-        this.size = size;
+    @JsonProperty("sizes")
+    public void setSizes(Set<Integer> sizes) {
+        this.sizes = sizes;
     }
 
-    public String getColor() {
-        return color;
+    @JsonProperty("colors")
+    public Set<String> getColors() {
+        return colors;
     }
 
-    public void setColor(String color) {
-        this.color = color;
+    @JsonProperty("colors")
+    public void setColors(Set<String> colors) {
+        this.colors = colors;
     }
 
-    public Instant getAddedDate() {
-        return addedDate;
+    @JsonProperty("allowedBuyerRegion")
+    public String getAllowedBuyerRegion() {
+        return allowedBuyerRegion;
     }
 
-    public void setAddedDate(Instant addedDate) {
-        this.addedDate = addedDate;
+    @JsonProperty("allowedBuyerRegion")
+    public void setAllowedBuyerRegion(String allowedBuyerRegion) {
+        this.allowedBuyerRegion = allowedBuyerRegion;
     }
 
-    public byte[] getImage() {
-        return image;
+    @JsonProperty("shipsToBuyer")
+    public Boolean getShipsToBuyer() {
+        return shipsToBuyer;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    @JsonProperty("shipsToBuyer")
+    public void setShipsToBuyer(Boolean shipsToBuyer) {
+        this.shipsToBuyer = shipsToBuyer;
     }
 
-    @Override
-    public String toString() {
-        return new ToStringBuilder(this).append("id", id).append("name", name).append("description", description)
-                .append("Condition", condition).append("brand", brand).append("size", size).append("color", color)
-                .append("price", price).append("published", published).append("objectNumber", objectNumber)
-                .append("href", href).append("categoryName", categoryName).append("sellerName", sellerName)
-                .append("image", image).toString();
+    @JsonProperty("isAuction")
+    public Boolean isAuction() {
+        return isAuction;
     }
 
-    @Override
-    public int hashCode() {
-        return new HashCodeBuilder().append(sellerName).append(price).append(name).append(objectNumber)
-                .append(description).append(condition).append(color).append(size).append(brand).append(id)
-                .append(published).append(href).append(categoryName).append(sellerName).append(image).toHashCode();
+    @JsonProperty("isAuction")
+    public void setAuction(Boolean isAuction) {
+        this.isAuction = isAuction;
     }
 
-    @Override
-    public boolean equals(Object other) {
-        if (other == this) {
-            return true;
-        }
-        if (!(other instanceof Advert)) {
-            return false;
-        }
-        Advert rhs = ((Advert) other);
-        return new EqualsBuilder().append(price, rhs.price).append(name, rhs.name).append(sellerName, rhs.sellerName)
-                .append(objectNumber, rhs.objectNumber).append(description, rhs.description).append(id, rhs.id)
-                .append(published, rhs.published).append(href, rhs.href).append(categoryName, rhs.categoryName)
-                .append(condition, rhs.condition).append(brand, rhs.brand).append(size, rhs.size)
-                .append(color, rhs.color).append(image, rhs.image).isEquals();
+    @JsonProperty("images")
+    public Set<String> getImages() {
+        return images;
+    }
+
+    @JsonProperty("images")
+    public void setImages(Set<String> images) {
+        this.images = images;
     }
 
 }
