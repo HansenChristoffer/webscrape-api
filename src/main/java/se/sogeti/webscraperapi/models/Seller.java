@@ -4,10 +4,6 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -18,44 +14,31 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 @Document(collection = "scrapes_sellers")
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "id", "memberId", "alias", "city", "canonicalURL", "sellerRatingAverage", "totalRating",
-        "isCompany", "createdDate", "lastModifiedDate" })
 public class Seller implements Serializable {
 
-    @JsonProperty("id")
     @MongoId(value = FieldType.OBJECT_ID)
     private String id;
 
-    @JsonProperty("memberId")
     @Indexed(unique = true)
     private Integer memberId;
 
-    @JsonProperty("alias")
     @Indexed(unique = true)
     private String alias;
 
-    @JsonProperty("city")
     private String city;
 
-    @JsonProperty("canonicalURL")
     private String canonicalURL;
 
-    @JsonProperty("sellerRatingAverage")
     private Double sellerRatingAverage;
 
-    @JsonProperty("totalRating")
     private Integer totalRating;
 
-    @JsonProperty("isCompany")
     private Boolean isCompany;
 
-    @JsonProperty("createdDate")
     @CreatedDate
     @DateTimeFormat(iso = ISO.DATE_TIME)
     private Instant createdDate;
 
-    @JsonProperty("lastModifiedDate")
     @LastModifiedDate
     @DateTimeFormat(iso = ISO.DATE_TIME)
     private Instant lastModifiedDate;
@@ -94,102 +77,82 @@ public class Seller implements Serializable {
         this.isCompany = isCompany;
     }
 
-    @JsonProperty("id")
     public String getId() {
         return id;
     }
 
-    @JsonProperty("id")
     public void setId(String id) {
         this.id = id;
     }
 
-    @JsonProperty("memberId")
     public Integer getMemberId() {
         return memberId;
     }
 
-    @JsonProperty("memberId")
     public void setMemberId(Integer memberId) {
         this.memberId = memberId;
     }
 
-    @JsonProperty("alias")
     public String getAlias() {
         return alias;
     }
 
-    @JsonProperty("alias")
     public void setAlias(String alias) {
         this.alias = alias;
     }
 
-    @JsonProperty("city")
     public String getCity() {
         return city;
     }
 
-    @JsonProperty("city")
     public void setCity(String city) {
         this.city = city;
     }
 
-    @JsonProperty("canonicalURL")
     public String getCanonicalURL() {
         return canonicalURL;
     }
 
-    @JsonProperty("canonicalURL")
     public void setCanonicalURL(String canonicalURL) {
         this.canonicalURL = canonicalURL;
     }
 
-    @JsonProperty("sellerRatingAverage")
     public Double getSellerRatingAverage() {
         return sellerRatingAverage;
     }
 
-    @JsonProperty("sellerRatingAverage")
     public void setSellerRatingAverage(Double sellerRatingAverage) {
         this.sellerRatingAverage = sellerRatingAverage;
     }
 
-    @JsonProperty("totalRating")
     public Integer getTotalRating() {
         return totalRating;
     }
 
-    @JsonProperty("totalRating")
     public void setTotalRating(Integer totalRating) {
         this.totalRating = totalRating;
     }
 
-    @JsonProperty("isCompany")
     public Boolean isCompany() {
         return isCompany;
     }
 
-    @JsonProperty("isCompany")
     public void setCompany(Boolean isCompany) {
         this.isCompany = isCompany;
     }
 
-    @JsonProperty("createdDate")
     public Instant getCreatedDate() {
         return this.createdDate;
     }
 
-    @JsonProperty("createdDate")
     public void setCreatedDate(Instant createdDate) {
         this.createdDate = createdDate;
     }
 
-    @JsonProperty("lastModifiedDate")
     public Instant getLastModifiedDate() {
         return this.lastModifiedDate;
     }
 
-    @JsonProperty("lastModifiedDate")
     public void setLastModifiedDate(Instant lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }

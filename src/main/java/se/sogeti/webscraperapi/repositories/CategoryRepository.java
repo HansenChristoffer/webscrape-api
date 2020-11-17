@@ -6,9 +6,11 @@ import java.util.Optional;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import se.sogeti.webscraperapi.models.Category;
 
+@Repository
 public interface CategoryRepository extends MongoRepository<Category, String> {
 
     @Query("{'_id': ?0}")
