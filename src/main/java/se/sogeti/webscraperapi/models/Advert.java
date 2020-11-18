@@ -2,6 +2,7 @@ package se.sogeti.webscraperapi.models;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Set;
 
@@ -341,4 +342,9 @@ public class Advert implements Serializable {
                 + ", lastModifiedDate='" + getLastModifiedDate() + "'" + "}";
     }
 
+    public AdvertResponseObj build() {
+        return new AdvertResponseObj(getTitle(), getDescription(), getOpeningBid(), getStartDate(), getEndDate(),
+                getItemId(), getCanonicalURL(), getCategoryId(), getMemberId(), getCondition(), getBrands(), getSizes(),
+                getColors(), getAllowedBuyerRegion(), getShipsToBuyer(), isAuction(), new ArrayList<>());
+    }
 }

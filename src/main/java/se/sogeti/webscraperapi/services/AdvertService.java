@@ -30,31 +30,9 @@ import se.sogeti.webscraperapi.repositories.AdvertRepository;
 public class AdvertService {
 
     private AdvertRepository advertRepository;
-    private ModelMapper modelMapper;
 
     public AdvertService(AdvertRepository advertRepository) {
         this.advertRepository = advertRepository;
-        this.modelMapper = new ModelMapper();
-        TypeMap<AdvertResponseObj, Advert> typeMap = modelMapper.createTypeMap(AdvertResponseObj.class, Advert.class);
-
-        typeMap.addMappings(mapper -> {
-            mapper.map(src -> src.getItemId(), Advert::setItemId);
-            mapper.map(src -> src.getBrands(), Advert::setBrands);
-            mapper.map(src -> src.isAuction(), Advert::setAuction);
-            mapper.map(src -> src.getCanonicalURL(), Advert::setCanonicalURL);
-            mapper.map(src -> src.getAllowedBuyerRegion(), Advert::setAllowedBuyerRegion);
-            mapper.map(src -> src.getCategoryId(), Advert::setCategoryId);
-            mapper.map(src -> src.getColors(), Advert::setColors);
-            mapper.map(src -> src.getCondition(), Advert::setCondition);
-            mapper.map(src -> src.getMemberId(), Advert::setMemberId);
-            mapper.map(src -> src.getDescription(), Advert::setDescription);
-            mapper.map(src -> src.getEndDate(), Advert::setEndDate);
-            mapper.map(src -> src.getOpeningBid(), Advert::setOpeningBid);
-            mapper.map(src -> src.getShipsToBuyer(), Advert::setShipsToBuyer);
-            mapper.map(src -> src.getSizes(), Advert::setSizes);
-            mapper.map(src -> src.getStartDate(), Advert::setStartDate);
-            mapper.map(src -> src.getTitle(), Advert::setTitle);
-        });
     }
 
     public Advert findByObjectId(String id) {
@@ -82,9 +60,8 @@ public class AdvertService {
         saveImages(advertResponseObj.getImages(), advertResponseObj.getItemId());
 
         try {
-            Advert newAdvert = modelMapper.map(advertResponseObj, Advert.class);
-            Advert savedAdvert = advertRepository.save(newAdvert);
-            return ResponseEntity.ok(modelMapper.map(savedAdvert, AdvertResponseObj.class));
+            Advert savedAdvert = advertRepository.save(advertResponseObj.build());
+            return ResponseEntity.ok(savedAdvert.build());
         } catch (DuplicateKeyException e) {
             log.error("Duplicate key at Advert!");
         } catch (Exception e) {
