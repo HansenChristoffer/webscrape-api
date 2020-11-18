@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +28,24 @@ import se.sogeti.webscraperapi.repositories.AdvertRepository;
 public class AdvertService {
 
     private AdvertRepository advertRepository;
+    private ModelMapper modelMapper;
 
-    public AdvertService(AdvertRepository advertRepository) {
+    public AdvertService(AdvertRepository advertRepository, ModelMapper modelMapper) {
         this.advertRepository = advertRepository;
+        this.modelMapper = modelMapper;
+        this.modelMapper.addMappings(skipModifiedFieldsMap);
     }
+
+    PropertyMap<AdvertResponseObj, Advert> skipModifiedFieldsMap = new PropertyMap<>() {
+        protected void configure() {
+            skip().setId(null);
+            skip().getId();
+            skip().setCreatedDate(null);
+            skip().setLastModifiedDate(null);
+            skip().getCreatedDate();
+            skip().getLastModifiedDate();
+        }
+    };
 
     public Advert findByObjectId(String id) {
         return advertRepository.findByObjectId(new ObjectId(id)).orElseThrow(() -> new AbstractNotFoundException(id));
@@ -54,7 +69,6 @@ public class AdvertService {
     }
 
     public ResponseEntity<AdvertResponseObj> createAdvert(AdvertResponseObj advertResponseObj) {
-        ModelMapper modelMapper = new ModelMapper();
         saveImages(advertResponseObj.getImages(), advertResponseObj.getItemId());
 
         try {
