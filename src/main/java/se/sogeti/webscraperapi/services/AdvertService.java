@@ -12,6 +12,8 @@ import javax.imageio.ImageIO;
 import org.bson.types.ObjectId;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
+import org.modelmapper.TypeMap;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,16 +35,27 @@ public class AdvertService {
     public AdvertService(AdvertRepository advertRepository) {
         this.advertRepository = advertRepository;
         this.modelMapper = new ModelMapper();
-        this.modelMapper.addMappings(skipModifiedFieldsMap);
-    }
+        TypeMap<AdvertResponseObj, Advert> typeMap = modelMapper.createTypeMap(AdvertResponseObj.class, Advert.class);
 
-    PropertyMap<AdvertResponseObj, Advert> skipModifiedFieldsMap = new PropertyMap<AdvertResponseObj, Advert>() {
-        protected void configure() {
-            skip().setId(null);
-            skip().setCreatedDate(null);
-            skip().setLastModifiedDate(null);
-        }
-    };
+        typeMap.addMappings(mapper -> {
+            mapper.map(src -> src.getItemId(), Advert::setItemId);
+            mapper.map(src -> src.getBrands(), Advert::setBrands);
+            mapper.map(src -> src.isAuction(), Advert::setAuction);
+            mapper.map(src -> src.getCanonicalURL(), Advert::setCanonicalURL);
+            mapper.map(src -> src.getAllowedBuyerRegion(), Advert::setAllowedBuyerRegion);
+            mapper.map(src -> src.getCategoryId(), Advert::setCategoryId);
+            mapper.map(src -> src.getColors(), Advert::setColors);
+            mapper.map(src -> src.getCondition(), Advert::setCondition);
+            mapper.map(src -> src.getMemberId(), Advert::setMemberId);
+            mapper.map(src -> src.getDescription(), Advert::setDescription);
+            mapper.map(src -> src.getEndDate(), Advert::setEndDate);
+            mapper.map(src -> src.getOpeningBid(), Advert::setOpeningBid);
+            mapper.map(src -> src.getShipsToBuyer(), Advert::setShipsToBuyer);
+            mapper.map(src -> src.getSizes(), Advert::setSizes);
+            mapper.map(src -> src.getStartDate(), Advert::setStartDate);
+            mapper.map(src -> src.getTitle(), Advert::setTitle);
+        });
+    }
 
     public Advert findByObjectId(String id) {
         return advertRepository.findByObjectId(new ObjectId(id)).orElseThrow(() -> new AbstractNotFoundException(id));
