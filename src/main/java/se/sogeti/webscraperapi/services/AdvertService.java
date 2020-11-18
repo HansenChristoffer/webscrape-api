@@ -30,9 +30,9 @@ public class AdvertService {
     private AdvertRepository advertRepository;
     private ModelMapper modelMapper;
 
-    public AdvertService(AdvertRepository advertRepository, ModelMapper modelMapper) {
+    public AdvertService(AdvertRepository advertRepository) {
         this.advertRepository = advertRepository;
-        this.modelMapper = modelMapper;
+        this.modelMapper = new ModelMapper();
         this.modelMapper.addMappings(skipModifiedFieldsMap);
     }
 
