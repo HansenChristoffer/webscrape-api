@@ -10,6 +10,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 import org.bson.types.ObjectId;
+import org.modelmapper.ModelMapper;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,22 +53,21 @@ public class AdvertService {
         return advertRepository.findByItemId(itemId).orElseThrow(() -> new AbstractNotFoundException(itemId));
     }
 
-    public ResponseEntity<Advert> createAdvert(AdvertResponseObj advertResponseObj) {
-        Advert newAdvert = advertResponseObj.build();
-
-        log.info("{}", newAdvert);
-        log.info("======================================================================================");
-        log.info("{}", advertResponseObj);
-
+    public ResponseEntity<AdvertResponseObj> createAdvert(AdvertResponseObj advertResponseObj) {
+        ModelMapper modelMapper = new ModelMapper();
         saveImages(advertResponseObj.getImages(), advertResponseObj.getItemId());
 
         try {
-            return ResponseEntity.ok(advertRepository.save(newAdvert));
+            Advert newAdvert = modelMapper.map(advertResponseObj, Advert.class);
+            Advert savedAdvert = advertRepository.save(newAdvert);
+            return ResponseEntity.ok(modelMapper.map(savedAdvert, AdvertResponseObj.class));
         } catch (DuplicateKeyException e) {
             log.error("Duplicate key at Advert!");
+        } catch (Exception e) {
+            log.error("createAdvert().Exception == {}", e.getMessage());
         }
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new Advert());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new AdvertResponseObj());
     }
 
     public ResponseEntity<Advert> replaceAdvert(Advert newAdvert, String id) {

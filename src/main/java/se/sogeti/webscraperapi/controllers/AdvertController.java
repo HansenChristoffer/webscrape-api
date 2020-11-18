@@ -51,7 +51,7 @@ public class AdvertController {
     }
 
     @PostMapping(value = "/adverts")
-    public ResponseEntity<Advert> createAdvert(@RequestBody AdvertResponseObj advertResponseObj) {
+    public ResponseEntity<AdvertResponseObj> createAdvert(@RequestBody AdvertResponseObj advertResponseObj) {
         return service.createAdvert(advertResponseObj);
     }
 
