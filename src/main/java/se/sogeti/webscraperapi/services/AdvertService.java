@@ -36,14 +36,11 @@ public class AdvertService {
         this.modelMapper.addMappings(skipModifiedFieldsMap);
     }
 
-    PropertyMap<AdvertResponseObj, Advert> skipModifiedFieldsMap = new PropertyMap<>() {
+    PropertyMap<AdvertResponseObj, Advert> skipModifiedFieldsMap = new PropertyMap<AdvertResponseObj, Advert>() {
         protected void configure() {
             skip().setId(null);
-            skip().getId();
             skip().setCreatedDate(null);
             skip().setLastModifiedDate(null);
-            skip().getCreatedDate();
-            skip().getLastModifiedDate();
         }
     };
 
