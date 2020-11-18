@@ -13,10 +13,10 @@ public interface AdvertRepository extends MongoRepository<Advert, String> {
     @Query("{'_id': ?0}")
     public Optional<Advert> findByObjectId(ObjectId id);
 
-    public Optional<Advert> findByName(String name);
+    public Optional<Advert> findByTitle(String title);
 
-    public Optional<Advert> findByHref(String href);
+    public Optional<Advert> findByItemId(Integer itemId);
 
-    public Optional<Advert> findByObjectNumber(String objectNumber);
+    public Optional<Advert> findByCanonicalURL(String canonicalURL);
 
 }

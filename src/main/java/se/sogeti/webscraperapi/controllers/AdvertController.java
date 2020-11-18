@@ -35,23 +35,23 @@ public class AdvertController {
         return service.findAll();
     }
 
-    @GetMapping(value = "/adverts/name")
-    public Advert findByName(@RequestParam String value) {
-        return service.findByName(value);
+    @GetMapping(value = "/adverts/title")
+    public Advert findByTitle(@RequestParam String value) {
+        return service.findByTitle(value);
     }
 
-    @GetMapping(value = "/adverts/href")
-    public Advert findByHref(@RequestParam String value) {
-        return service.findByHref(value);
+    @GetMapping(value = "/adverts/url")
+    public Advert findByCanonicalURL(@RequestParam String value) {
+        return service.findByCanonicalURL(value);
     }
 
-    @GetMapping(value = "/adverts/obn")
-    public Advert findByObjectNumber(@RequestParam String value) {
-        return service.findByObjectNumber(value);
+    @GetMapping(value = "/adverts/itemId")
+    public Advert findByItemId(@RequestParam Integer value) {
+        return service.findByItemId(value);
     }
 
     @PostMapping(value = "/adverts")
-    public ResponseEntity<Advert> createAdvert(@RequestBody AdvertResponseObj advertResponseObj) {
+    public ResponseEntity<AdvertResponseObj> createAdvert(@RequestBody AdvertResponseObj advertResponseObj) {
         return service.createAdvert(advertResponseObj);
     }
 
