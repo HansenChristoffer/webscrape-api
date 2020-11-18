@@ -38,8 +38,6 @@ public class LinkService {
 		Link link = links.get(RAND.nextInt(links.size()));
 		closeLink(link.getHref());
 
-		log.info("Links.size == {}, Link sending == {}", links.size(), link);
-
 		return ResponseEntity.ok(link);
 	}
 
