@@ -13,8 +13,8 @@ import se.sogeti.webscraperapi.constants.Settings;
 public class WebscraperapiApplication {
 
 	public static void main(String[] args) {
-		checkFileStructures();
 		SpringApplication.run(WebscraperapiApplication.class, args);
+		checkFileStructures();
 	}
 
 	private static void checkFileStructures() {
