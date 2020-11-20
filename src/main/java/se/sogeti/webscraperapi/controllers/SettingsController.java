@@ -26,7 +26,8 @@ public class SettingsController {
         return settingsService.getSettings(value);
     }
 
-    @PostMapping(value = { "/settings" }, consumes = MediaType.TEXT_PLAIN_VALUE, produces = MediaType.TEXT_PLAIN_VALUE)
+    @PostMapping(value = {
+            "/settings" }, consumes = MediaType.APPLICATION_XML_VALUE, produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<String> setSettings(@RequestParam("value") String value, @RequestBody String settingsValue) {
         return settingsService.setSettings(value, settingsValue);
     }
