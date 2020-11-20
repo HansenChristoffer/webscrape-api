@@ -21,7 +21,7 @@ public class SettingsController {
         this.settingsService = settingsService;
     }
 
-    @GetMapping(value = { "/settings" })
+    @GetMapping(value = { "/settings" }, produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<String> getSettings(@RequestParam("value") String value) {
         return settingsService.getSettings(value);
     }
