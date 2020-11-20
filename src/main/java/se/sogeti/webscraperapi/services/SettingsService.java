@@ -22,11 +22,14 @@ public class SettingsService {
         String rtnStr = "";
 
         if (value.equalsIgnoreCase("ls")) {
-            rtnStr = fetchSettingsValue("src/main/resources/config/settings/linkscraper-settings.xml");
+            rtnStr = fetchSettingsValue(
+                    Settings.BASE_SETTINGS_RELATIVE_PATH.concat("/").concat(Settings.SETTINGS_FILES[0]));
         } else if (value.equalsIgnoreCase("as")) {
-            rtnStr = fetchSettingsValue("src/main/resources/config/settings/adscraper-settings.xml");
+            rtnStr = fetchSettingsValue(
+                    Settings.BASE_SETTINGS_RELATIVE_PATH.concat("/").concat(Settings.SETTINGS_FILES[1]));
         } else if (value.equalsIgnoreCase("cs")) {
-            rtnStr = fetchSettingsValue("src/main/resources/config/settings/categoryscraper-settings.xml");
+            rtnStr = fetchSettingsValue(
+                    Settings.BASE_SETTINGS_RELATIVE_PATH.concat("/").concat(Settings.SETTINGS_FILES[2]));
         } else {
             return ResponseEntity.badRequest().body("No such parameter");
         }
@@ -38,11 +41,14 @@ public class SettingsService {
         boolean worked = false;
 
         if (value.equalsIgnoreCase("ls")) {
-            worked = setSettingsValue("src/main/resources/config/settings/linkscraper-settings.xml", settingsValue);
+            worked = setSettingsValue(
+                    Settings.BASE_SETTINGS_RELATIVE_PATH.concat("/").concat(Settings.SETTINGS_FILES[0]), settingsValue);
         } else if (value.equalsIgnoreCase("as")) {
-            worked = setSettingsValue("src/main/resources/config/settings/adscraper-settings.xml", settingsValue);
+            worked = setSettingsValue(
+                    Settings.BASE_SETTINGS_RELATIVE_PATH.concat("/").concat(Settings.SETTINGS_FILES[1]), settingsValue);
         } else if (value.equalsIgnoreCase("cs")) {
-            worked = setSettingsValue("src/main/resources/config/settings/categoryscraper-settings.xml", settingsValue);
+            worked = setSettingsValue(
+                    Settings.BASE_SETTINGS_RELATIVE_PATH.concat("/").concat(Settings.SETTINGS_FILES[2]), settingsValue);
         } else {
             return ResponseEntity.badRequest().body("No such parameter");
         }
