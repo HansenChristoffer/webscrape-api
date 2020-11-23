@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
+import se.sogeti.webscraperapi.constants.Settings;
 import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
 import se.sogeti.webscraperapi.models.Advert;
 import se.sogeti.webscraperapi.models.AdvertResponseObj;
@@ -100,8 +101,8 @@ public class AdvertService {
             try (ByteArrayInputStream bis = new ByteArrayInputStream(img);) {
                 BufferedImage bImg = ImageIO.read(bis);
                 ImageIO.write(bImg, "jpg",
-                        new File("src/main/resources/images/tradera/adverts/".concat(String.valueOf(itemId)).concat("-")
-                                .concat(String.valueOf(images.indexOf(img)).concat(".jpg"))));
+                        new File(Settings.BASE_IMAGES_RELATIVE_PATH.concat("/").concat(String.valueOf(itemId))
+                                .concat("-").concat(String.valueOf(images.indexOf(img)).concat(".jpg"))));
             } catch (IOException ioe) {
                 log.error("saveImages().IOException == {}", ioe.getMessage());
             }
