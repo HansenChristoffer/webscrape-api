@@ -28,5 +28,5 @@ jobs:
       with:
         app-name: 'scrapeapi'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_1ec459b99fb74dee991651334d921737 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_0117951e16214946bb2bde2afdb3d592 }}
         package: '${{ github.workspace }}/target/*.jar'
