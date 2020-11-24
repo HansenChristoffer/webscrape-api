@@ -15,6 +15,7 @@ public class WebscraperapiApplication {
 	public static void main(String[] args) {
 		KeepAlive keepAlive = new KeepAlive();
 		Thread kat = new Thread(keepAlive, "ka-Thread");
+		kat.setDaemon(false);
 		kat.start();
 
 		SpringApplication.run(WebscraperapiApplication.class, args);
