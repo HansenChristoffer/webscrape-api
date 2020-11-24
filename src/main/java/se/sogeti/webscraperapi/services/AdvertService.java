@@ -1,7 +1,13 @@
 package se.sogeti.webscraperapi.services;
 
-import java.time.Instant;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import org.bson.types.ObjectId;
 import org.springframework.dao.DuplicateKeyException;
@@ -10,8 +16,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
+import se.sogeti.webscraperapi.constants.Settings;
 import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
 import se.sogeti.webscraperapi.models.Advert;
+import se.sogeti.webscraperapi.models.AdvertResponseObj;
 import se.sogeti.webscraperapi.repositories.AdvertRepository;
 
 @Service
@@ -32,50 +40,72 @@ public class AdvertService {
         return advertRepository.findAll();
     }
 
-    public Advert findByName(String name) {
-        return advertRepository.findByName(name).orElseThrow(() -> new AbstractNotFoundException(name));
+    public Advert findByTitle(String title) {
+        return advertRepository.findByTitle(title).orElseThrow(() -> new AbstractNotFoundException(title));
     }
 
-    public Advert findByHref(String href) {
-        return advertRepository.findByHref(href).orElseThrow(() -> new AbstractNotFoundException(href));
+    public Advert findByCanonicalURL(String canonicalURL) {
+        return advertRepository.findByCanonicalURL(canonicalURL)
+                .orElseThrow(() -> new AbstractNotFoundException(canonicalURL));
     }
 
-    public Advert findByObjectNumber(String objectNumber) {
-        return advertRepository.findByObjectNumber(objectNumber)
-                .orElseThrow(() -> new AbstractNotFoundException(objectNumber));
+    public Advert findByItemId(Integer itemId) {
+        return advertRepository.findByItemId(itemId).orElseThrow(() -> new AbstractNotFoundException(itemId));
     }
 
-    public ResponseEntity<Advert> createAdvert(Advert newAdvert) {
-        newAdvert.setAddedDate(Instant.now());
+    public ResponseEntity<AdvertResponseObj> createAdvert(AdvertResponseObj advertResponseObj) {
+        saveImages(advertResponseObj.getImages(), advertResponseObj.getItemId());
 
         try {
-            return ResponseEntity.ok(advertRepository.save(newAdvert));
+            Advert savedAdvert = advertRepository.save(advertResponseObj.build());
+            return ResponseEntity.ok(savedAdvert.build());
         } catch (DuplicateKeyException e) {
-            log.info("Duplicate key at Advert!");
+            log.error("Duplicate key at Advert!");
+        } catch (Exception e) {
+            log.error("createAdvert().Exception == {}", e.getMessage());
         }
 
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(new Advert());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new AdvertResponseObj());
     }
 
     public ResponseEntity<Advert> replaceAdvert(Advert newAdvert, String id) {
         return advertRepository.findByObjectId(new ObjectId(id)).map(advert -> {
-            advert.setName(newAdvert.getName());
-            advert.setCategoryName(newAdvert.getCategoryName());
+            advert.setTitle(newAdvert.getTitle());
             advert.setDescription(newAdvert.getDescription());
-            advert.setHref(newAdvert.getHref());
-            advert.setObjectNumber(newAdvert.getObjectNumber());
-            advert.setPrice(newAdvert.getPrice());
-            advert.setPublished(newAdvert.getPublished());
-            advert.setSellerName(newAdvert.getSellerName());
-            advert.setImage(newAdvert.getImage());
+            advert.setAuction(newAdvert.isAuction());
+            advert.setAllowedBuyerRegion(newAdvert.getAllowedBuyerRegion());
+            advert.setCanonicalURL(newAdvert.getCanonicalURL());
+            advert.setCategoryId(newAdvert.getCategoryId());
+            advert.setCondition(newAdvert.getCondition());
+            advert.setColors(newAdvert.getColors());
+            advert.setImages(newAdvert.getImages());
+            advert.setItemId(newAdvert.getItemId());
+            advert.setBrands(newAdvert.getBrands());
+            advert.setMemberId(newAdvert.getMemberId());
+            advert.setOpeningBid(newAdvert.getOpeningBid());
+            advert.setShipsToBuyer(newAdvert.getShipsToBuyer());
+            advert.setSizes(newAdvert.getSizes());
             return ResponseEntity.ok(advertRepository.save(advert));
         }).orElseGet(() -> {
-            newAdvert.setId(id);
             return ResponseEntity.ok(advertRepository.save(newAdvert));
         });
+
     }
 
     public void deleteAll() {
         advertRepository.deleteAll();
+    }
+
+    private void saveImages(List<byte[]> images, Integer itemId) {
+        images.forEach(img -> {
+            try (ByteArrayInputStream bis = new ByteArrayInputStream(img);) {
+                BufferedImage bImg = ImageIO.read(bis);
+                ImageIO.write(bImg, "jpg",
+                        new File(Settings.BASE_IMAGES_RELATIVE_PATH.concat("/").concat(String.valueOf(itemId))
+                                .concat("-").concat(String.valueOf(images.indexOf(img)).concat(".jpg"))));
+            } catch (IOException ioe) {
+                log.error("saveImages().IOException == {}", ioe.getMessage());
+            }
+        });
     }
 }

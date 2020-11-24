@@ -1,6 +1,5 @@
 package se.sogeti.webscraperapi.services;
 
-import java.time.Instant;
 import java.util.Collection;
 
 import org.bson.types.ObjectId;
@@ -32,19 +31,22 @@ public class SellerService {
         return sellerRepository.findAll();
     }
 
-    public Seller findByName(String name) {
-        return sellerRepository.findByName(name) //
-                .orElseThrow(() -> new AbstractNotFoundException(name));
+    public Seller findByAlias(String alias) {
+        return sellerRepository.findByAlias(alias) //
+                .orElseThrow(() -> new AbstractNotFoundException(alias));
     }
 
-    public Seller findByHref(String href) {
-        return sellerRepository.findByHref(href) //
-                .orElseThrow(() -> new AbstractNotFoundException(href));
+    public Seller findByMemberId(Integer memberId) {
+        return sellerRepository.findByMemberId(memberId) //
+                .orElseThrow(() -> new AbstractNotFoundException(memberId));
+    }
+
+    public Seller findByCanonicalURL(String canonicalURL) {
+        return sellerRepository.findByCanonicalURL(canonicalURL) //
+                .orElseThrow(() -> new AbstractNotFoundException(canonicalURL));
     }
 
     public ResponseEntity<Seller> createSeller(Seller newSeller) {
-        newSeller.setAddedDate(Instant.now());
-
         try {
             return ResponseEntity.ok(sellerRepository.save(newSeller));
         } catch (DuplicateKeyException e) {
@@ -55,18 +57,19 @@ public class SellerService {
     }
 
     public ResponseEntity<Seller> replaceSeller(Seller newSeller, String id) {
-
-        return sellerRepository.findByObjectId(new ObjectId(id)) //
-                .map(seller -> {
-                    seller.setName(newSeller.getName());
-                    seller.setLocation(newSeller.getLocation());
-                    seller.setHref(newSeller.getHref());
-                    return ResponseEntity.ok(sellerRepository.save(seller));
-
-                }).orElseGet(() -> {
-                    newSeller.setId(id);
-                    return ResponseEntity.ok(sellerRepository.save(newSeller));
-                });
+        return sellerRepository.findByObjectId(new ObjectId(id)).map(seller -> {
+            seller.setAlias(newSeller.getAlias());
+            seller.setCanonicalURL(newSeller.getCanonicalURL());
+            seller.setCity(newSeller.getCity());
+            seller.setCompany(newSeller.isCompany());
+            seller.setMemberId(newSeller.getMemberId());
+            seller.setTotalRating(newSeller.getTotalRating());
+            seller.setSellerRatingAverage(newSeller.getSellerRatingAverage());
+            return ResponseEntity.ok(sellerRepository.save(seller));
+        }).orElseGet(() -> {
+            newSeller.setId(id);
+            return ResponseEntity.ok(sellerRepository.save(newSeller));
+        });
     }
 
     public void deleteAll() {

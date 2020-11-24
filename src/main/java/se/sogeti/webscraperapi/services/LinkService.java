@@ -32,7 +32,6 @@ public class LinkService {
 		List<Link> links = new ArrayList<>(linkRepository.findOpen());
 
 		if (links.isEmpty()) {
-
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Link());
 		}
 
