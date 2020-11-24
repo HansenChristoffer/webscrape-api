@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 
 public class KeepAlive implements Runnable {
 
-    private static volatile boolean isRunning = true;
+    private volatile boolean isRunning = true;
     private long sleepTime = 20;
     private static final Logger LOGGER = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass().getName());
 
@@ -22,7 +22,7 @@ public class KeepAlive implements Runnable {
         }
     }
 
-    public static void kill() {
+    public void kill() {
         isRunning = false;
     }
 

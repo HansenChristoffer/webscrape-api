@@ -12,9 +12,10 @@ import se.sogeti.webscraperapi.constants.Settings;
 @Slf4j
 public class WebscraperapiApplication {
 
+	public static final KeepAlive KEEPALIVE = new KeepAlive();
+	private static Thread kat = new Thread(KEEPALIVE, "ka-Thread");
+
 	public static void main(String[] args) {
-		KeepAlive keepAlive = new KeepAlive();
-		Thread kat = new Thread(keepAlive, "ka-Thread");
 		kat.setDaemon(false);
 		kat.start();
 
