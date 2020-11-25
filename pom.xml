@@ -71,7 +71,7 @@
 					<schemaVersion>V2</schemaVersion>
 					<resourceGroup>rg-scrapeservices</resourceGroup>
 					<appName>webscraperapi-1606300858222</appName>
-					<pricingTier>FREE</pricingTier>
+					<pricingTier>Free</pricingTier>
 					<region>northeurope</region>
 					<runtime>
 						<os>linux</os>
