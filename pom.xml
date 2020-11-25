@@ -69,9 +69,10 @@
 				<artifactId>azure-webapp-maven-plugin</artifactId>
 				<configuration>
 					<schemaVersion>V2</schemaVersion>
+					<authType>azure_cli</authType>
 					<resourceGroup>rg-scrapeservices</resourceGroup>
 					<appName>webscraperapi-1606300858222</appName>
-					<pricingTier>Free</pricingTier>
+					<pricingTier>F1</pricingTier>
 					<region>northeurope</region>
 					<runtime>
 						<os>linux</os>
