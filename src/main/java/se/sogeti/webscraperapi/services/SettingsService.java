@@ -22,14 +22,11 @@ public class SettingsService {
         String rtnStr = "";
 
         if (value.equalsIgnoreCase("ls")) {
-            rtnStr = fetchSettingsValue(
-                    Settings.BASE_SETTINGS_RELATIVE_PATH.concat("/").concat(Settings.SETTINGS_FILES[0]));
+            rtnStr = fetchSettingsValue(Settings.SETTINGS_FILES[0]);
         } else if (value.equalsIgnoreCase("as")) {
-            rtnStr = fetchSettingsValue(
-                    Settings.BASE_SETTINGS_RELATIVE_PATH.concat("/").concat(Settings.SETTINGS_FILES[1]));
+            rtnStr = fetchSettingsValue(Settings.SETTINGS_FILES[1]);
         } else if (value.equalsIgnoreCase("cs")) {
-            rtnStr = fetchSettingsValue(
-                    Settings.BASE_SETTINGS_RELATIVE_PATH.concat("/").concat(Settings.SETTINGS_FILES[2]));
+            rtnStr = fetchSettingsValue(Settings.SETTINGS_FILES[2]);
         } else {
             return ResponseEntity.badRequest().body("No such parameter");
         }
@@ -41,14 +38,11 @@ public class SettingsService {
         boolean worked = false;
 
         if (value.equalsIgnoreCase("ls")) {
-            worked = setSettingsValue(
-                    Settings.BASE_SETTINGS_RELATIVE_PATH.concat("/").concat(Settings.SETTINGS_FILES[0]), settingsValue);
+            worked = setSettingsValue(Settings.SETTINGS_FILES[0], settingsValue);
         } else if (value.equalsIgnoreCase("as")) {
-            worked = setSettingsValue(
-                    Settings.BASE_SETTINGS_RELATIVE_PATH.concat("/").concat(Settings.SETTINGS_FILES[1]), settingsValue);
+            worked = setSettingsValue(Settings.SETTINGS_FILES[1], settingsValue);
         } else if (value.equalsIgnoreCase("cs")) {
-            worked = setSettingsValue(
-                    Settings.BASE_SETTINGS_RELATIVE_PATH.concat("/").concat(Settings.SETTINGS_FILES[2]), settingsValue);
+            worked = setSettingsValue(Settings.SETTINGS_FILES[2], settingsValue);
         } else {
             return ResponseEntity.badRequest().body("No such parameter");
         }
