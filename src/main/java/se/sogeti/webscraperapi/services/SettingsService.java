@@ -22,14 +22,11 @@ public class SettingsService {
         String rtnStr = "";
 
         if (value.equalsIgnoreCase("ls")) {
-            rtnStr = fetchSettingsValue(
-                    Settings.BASE_SETTINGS_RELATIVE_PATH.concat("/").concat(Settings.SETTINGS_FILES[0]));
+            rtnStr = fetchSettingsValue(Settings.SETTINGS_FILES[0]);
         } else if (value.equalsIgnoreCase("as")) {
-            rtnStr = fetchSettingsValue(
-                    Settings.BASE_SETTINGS_RELATIVE_PATH.concat("/").concat(Settings.SETTINGS_FILES[1]));
+            rtnStr = fetchSettingsValue(Settings.SETTINGS_FILES[1]);
         } else if (value.equalsIgnoreCase("cs")) {
-            rtnStr = fetchSettingsValue(
-                    Settings.BASE_SETTINGS_RELATIVE_PATH.concat("/").concat(Settings.SETTINGS_FILES[2]));
+            rtnStr = fetchSettingsValue(Settings.SETTINGS_FILES[2]);
         } else {
             return ResponseEntity.badRequest().body("No such parameter");
         }
@@ -61,7 +58,7 @@ public class SettingsService {
         return ResponseEntity.ok(Settings.active);
     }
 
-    public static ResponseEntity<Boolean> setActive(Boolean value) {
+    public static ResponseEntity<Boolean> setActive(boolean value) {
         Settings.active = value;
 
         return Settings.active == value ? ResponseEntity.ok(value)

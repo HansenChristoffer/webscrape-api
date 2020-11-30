@@ -8,7 +8,7 @@ public class Settings {
             BASE_SETTINGS_RELATIVE_PATH.concat("/adscraper-settings.xml"),
             BASE_SETTINGS_RELATIVE_PATH.concat("/categoryscraper-settings.xml") };
 
-    public static boolean active = false;
+    public static boolean active = true;
 
     private Settings() {
     }
