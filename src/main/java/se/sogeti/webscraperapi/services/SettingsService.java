@@ -55,7 +55,7 @@ public class SettingsService {
         return ResponseEntity.ok(Settings.active);
     }
 
-    public static ResponseEntity<Boolean> setActive(Boolean value) {
+    public static ResponseEntity<Boolean> setActive(boolean value) {
         Settings.active = value;
 
         return Settings.active == value ? ResponseEntity.ok(value)

@@ -37,12 +37,12 @@ public class SettingsController {
         return settingsService.isActive();
     }
 
-    @PostMapping(value = { "/status/setActive" })
-    public ResponseEntity<Boolean> setActive(@RequestParam("value") Boolean value) {
+    @GetMapping(value = { "/status/setActive" })
+    public ResponseEntity<Boolean> setActive(@RequestParam("value") boolean value) {
         return settingsService.setActive(value);
     }
 
-    @PostMapping(value = { "/status/toggle" })
+    @GetMapping(value = { "/status/toggle" })
     public ResponseEntity<Boolean> toggleActive() {
         return settingsService.toggleActive();
     }
