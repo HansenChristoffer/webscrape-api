@@ -73,6 +73,7 @@ public class CategoryService {
     }
 
     public ResponseEntity<Collection<Category>> createAllCategories(Set<Category> newCategories) {
+        categoryRepository.deleteAll();
         Set<Category> savedCategory = new HashSet<>();
         Category newCategory;
 
@@ -132,7 +133,6 @@ public class CategoryService {
                 : ResponseEntity.status(HttpStatus.CONFLICT).body(new Category());
     }
 
-    public void deleteAll() {
-        categoryRepository.deleteAll();
-    }
+ 
+
 }

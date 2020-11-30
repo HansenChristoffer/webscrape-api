@@ -12,7 +12,13 @@ import se.sogeti.webscraperapi.constants.Settings;
 @Slf4j
 public class WebscraperapiApplication {
 
+	public static final KeepAlive KEEPALIVE = new KeepAlive();
+	private static Thread kat = new Thread(KEEPALIVE, "ka-Thread");
+
 	public static void main(String[] args) {
+		kat.setDaemon(false);
+		kat.start();
+
 		SpringApplication.run(WebscraperapiApplication.class, args);
 		checkFileStructures();
 	}

@@ -14,26 +14,15 @@ import se.sogeti.webscraperapi.services.SellerService;
 @Configuration
 public class LoadDatabase {
 
-  private CategoryService categoryService;
-  private SellerService sellerService;
-  private AdvertService advertService;
-  private LinkService linkService;
-
   @Bean
   CommandLineRunner initDatabase(CategoryService categoryService, SellerService sellerService,
       AdvertService advertService, LinkService linkService) {
 
-    this.categoryService = categoryService;
-    this.sellerService = sellerService;
-    this.advertService = advertService;
-    this.linkService = linkService;
-
     return args -> {
       // Clear database
-      // linkService.deleteAll();
-      sellerService.deleteAll();
-      // categoryService.deleteAll();
-      advertService.deleteAll();
+      //linkService.deleteAll();
+      //sellerService.deleteAll();
+      //advertService.deleteAll();
     };
   }
 
