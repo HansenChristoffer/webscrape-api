@@ -51,21 +51,44 @@ public class SettingsService {
                 : ResponseEntity.status(HttpStatus.NOT_MODIFIED).body("ERROR - [Did not modify settings!]");
     }
 
-    public ResponseEntity<Boolean> isActive() {
-        return ResponseEntity.ok(Settings.active);
+    public ResponseEntity<Boolean> isActive(String value) {
+        if (value.equalsIgnoreCase("LS")) {
+            return ResponseEntity.ok(Settings.activeLS);
+        } else if (value.equalsIgnoreCase("CS")) {
+            return ResponseEntity.ok(Settings.activeCS);
+        } else if (value.equalsIgnoreCase("AS")) {
+            return ResponseEntity.ok(Settings.activeLS);
+        } else {
+            return ResponseEntity.badRequest().body(false);
+        }
     }
 
-    public static ResponseEntity<Boolean> setActive(boolean value) {
-        Settings.active = value;
+    public static ResponseEntity<Boolean> setActive(String value, boolean bool) {
+        boolean b = false;
 
-        return Settings.active == value ? ResponseEntity.ok(value)
-                : ResponseEntity.status(HttpStatus.NO_CONTENT).body(false);
+        if (value.equalsIgnoreCase("LS")) {
+            b = Settings.activeLS = bool;
+        } else if (value.equalsIgnoreCase("CS")) {
+            b = Settings.activeCS = bool;
+        } else if (value.equalsIgnoreCase("AS")) {
+            b = Settings.activeAS = bool;
+        }
+
+        return b == bool ? ResponseEntity.ok(bool) : ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(false);
     }
 
-    public static ResponseEntity<Boolean> toggleActive() {
-        Settings.active = !Settings.active;
+    public static ResponseEntity<Boolean> toggleActive(String value) {
+        boolean b = false;
 
-        return ResponseEntity.ok().body(Settings.active);
+        if (value.equalsIgnoreCase("LS")) {
+            b = Settings.activeLS = !Settings.activeLS;
+        } else if (value.equalsIgnoreCase("CS")) {
+            b = Settings.activeCS = !Settings.activeCS;
+        } else if (value.equalsIgnoreCase("AS")) {
+            b = Settings.activeAS = !Settings.activeAS;
+        }
+
+        return ResponseEntity.ok(b);
     }
 
     private String fetchSettingsValue(String path) {

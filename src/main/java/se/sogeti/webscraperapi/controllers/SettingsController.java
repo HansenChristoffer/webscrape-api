@@ -32,19 +32,19 @@ public class SettingsController {
         return settingsService.setSettings(value, settingsValue);
     }
 
-    @GetMapping(value = { "/status/isActive" })
-    public ResponseEntity<Boolean> isActive() {
-        return settingsService.isActive();
+    @GetMapping(value = { "/status/isActive", "/status/isactive" })
+    public ResponseEntity<Boolean> isActive(@RequestParam("value") String value) {
+        return settingsService.isActive(value);
     }
 
-    @GetMapping(value = { "/status/setActive" })
-    public ResponseEntity<Boolean> setActive(@RequestParam("value") boolean value) {
-        return settingsService.setActive(value);
+    @GetMapping(value = { "/status/setActive", "/status/setactive" })
+    public ResponseEntity<Boolean> setActive(@RequestParam("value") String value, @RequestParam("bool") boolean bool) {
+        return settingsService.setActive(value, bool);
     }
 
-    @GetMapping(value = { "/status/toggle" })
-    public ResponseEntity<Boolean> toggleActive() {
-        return settingsService.toggleActive();
+    @GetMapping(value = { "/status/toggle", "/status/Toggle" })
+    public ResponseEntity<Boolean> toggleActive(@RequestParam("value") String value) {
+        return settingsService.toggleActive(value);
     }
 
 }
