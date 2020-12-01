@@ -57,7 +57,7 @@ public class SettingsService {
         } else if (value.equalsIgnoreCase("CS")) {
             return ResponseEntity.ok(Settings.activeCS);
         } else if (value.equalsIgnoreCase("AS")) {
-            return ResponseEntity.ok(Settings.activeLS);
+            return ResponseEntity.ok(Settings.activeAS);
         } else {
             return ResponseEntity.badRequest().body(false);
         }
