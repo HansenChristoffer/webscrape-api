@@ -1,6 +1,7 @@
 package se.sogeti.webscraperapi.models;
 
 import java.io.Serializable;
+import java.time.Clock;
 import java.time.Instant;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -41,7 +42,7 @@ public class Category implements Serializable {
     private boolean isOpen = true;
 
     @DateTimeFormat(iso = ISO.DATE_TIME)
-    private Instant addedDate;
+    private Instant addedDate = Instant.now(Clock.systemUTC());
 
     public String getId() {
         return id;

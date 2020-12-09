@@ -26,7 +26,7 @@ public class CategoryController {
     }
 
     @GetMapping("/categories/open")
-    public Category findOpen() {
+    public ResponseEntity<Category> findOpen() {
         return service.findOpen();
     }
 

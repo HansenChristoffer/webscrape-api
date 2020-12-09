@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import lombok.extern.slf4j.Slf4j;
 import se.sogeti.webscraperapi.exceptions.AbstractNotFoundException;
-import se.sogeti.webscraperapi.exceptions.EmptyListException;
 import se.sogeti.webscraperapi.models.Category;
 import se.sogeti.webscraperapi.repositories.CategoryRepository;
 
@@ -25,23 +24,28 @@ import se.sogeti.webscraperapi.repositories.CategoryRepository;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final SettingsService settingsService;
     private static final Random RAND = new Random();
 
-    CategoryService(CategoryRepository categoryRepository) {
+    CategoryService(CategoryRepository categoryRepository, SettingsService settingsService) {
         this.categoryRepository = categoryRepository;
+        this.settingsService = settingsService;
     }
 
-    public Category findOpen() {
-        List<Category> links = new ArrayList<>(categoryRepository.findOpen());
+    public ResponseEntity<Category> findOpen() {
+        List<Category> categories = new ArrayList<>(categoryRepository.findOpen());
 
-        if (links.isEmpty()) {
-            throw new EmptyListException();
+        if (categories.isEmpty()) {
+            settingsService.setActive("ls", false);
+            log.info("No open categories - Toggling the active status of Link scraper!");
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Category());
         }
 
-        Category category = links.get(RAND.nextInt(links.size()));
+        Category category = categories.get(RAND.nextInt(categories.size()));
         closeCategory(category.getHref());
 
-        return category;
+        return ResponseEntity.ok(category);
+
     }
 
     public Category findByObjectId(String id) {
@@ -132,7 +136,5 @@ public class CategoryService {
         return !updatedCategory.isOpen() ? ResponseEntity.ok(category)
                 : ResponseEntity.status(HttpStatus.CONFLICT).body(new Category());
     }
-
- 
 
 }

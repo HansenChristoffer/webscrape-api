@@ -22,16 +22,20 @@ import se.sogeti.webscraperapi.repositories.LinkRepository;
 public class LinkService {
 
 	private LinkRepository linkRepository;
+	private final SettingsService settingsService;
 	private static final Random RAND = new Random();
 
-	public LinkService(LinkRepository repository) {
+	public LinkService(LinkRepository repository, SettingsService settingsService) {
 		this.linkRepository = repository;
+		this.settingsService = settingsService;
 	}
 
 	public ResponseEntity<Link> findOpen() {
 		List<Link> links = new ArrayList<>(linkRepository.findOpen());
 
 		if (links.isEmpty()) {
+			settingsService.setActive("as", false);
+			log.info("No open links - Toggling the active status of Advert scraper!");
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new Link());
 		}
 
@@ -64,7 +68,7 @@ public class LinkService {
 				}
 
 			} catch (Exception e) {
-				log.error("testCreateAllLinks().Exception == {}", e.getMessage());
+				log.error("createAllLinks().Exception == {}", e.getMessage());
 			}
 		}
 
