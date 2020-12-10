@@ -6,7 +6,6 @@ RPC API used as the API responsible for storing all data from the webscrapers.
  - Spring
  - Spring MongoDB
  - Maven
- - Optional: Docker
 
 # Getting started
 
