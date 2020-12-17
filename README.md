@@ -2,18 +2,16 @@
 RPC API used as the API responsible for storing all data from the webscrapers.
 
 # Technologies
- - Java 15
+ - Java 11
  - Spring
  - Spring MongoDB
  - Maven
- - Optional: Docker
 
 # Getting started
 
 Webscrape-API uses Spring MongoDB, which means you need to set up a MongoDB server. This you can do locally or you could download the [Official MongoDB Docker image](https://hub.docker.com/_/mongo), but you would first need to install [https://www.docker.com/](Docker) for that.
 
-<p>Further down the line this API will be hosted alongside the database on a docker, at least that is the plan.
-Just remember to go into application.properties folder and change the ip to the MongoDB server. It will be localhost if you're hosting it locally.</p>
+<p>Remember to go into application.properties folder and change the ip to the MongoDB server. It will be localhost if you're hosting it locally.</p>
 
 If you require help on how to install MongoDB, do please refer to the [Official MongoDB documentation](https://docs.mongodb.com/manual/introduction).<br>
 
